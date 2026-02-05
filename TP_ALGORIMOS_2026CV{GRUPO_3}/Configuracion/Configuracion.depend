@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1770316311 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\configuracion\configuracion.c
+	"Configuracion.h"
+
+1770316353 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\configuracion\configuracion.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770315906 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\configuracion\main.c
+	<stdio.h>
+	<stdlib.h>
+	"Configuracion.h"
+

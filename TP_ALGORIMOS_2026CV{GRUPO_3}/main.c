@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "Volcan.h"
 int main()
 {
     printf("Hello world!\n");
