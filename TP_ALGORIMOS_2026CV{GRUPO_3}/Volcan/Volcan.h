@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #define JUGADOR  'J'
 #define SALIDA   'S'
 #define PREMIO   'P'

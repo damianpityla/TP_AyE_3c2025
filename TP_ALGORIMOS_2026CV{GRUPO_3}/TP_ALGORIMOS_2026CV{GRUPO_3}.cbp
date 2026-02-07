@@ -31,10 +31,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Volcan.c">
+		<Unit filename="Configuracion/Configuracion.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="Volcan.h" />
+		<Unit filename="Configuracion/Configuracion.h" />
+		<Unit filename="Volcan/Volcan.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Volcan/Volcan.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
