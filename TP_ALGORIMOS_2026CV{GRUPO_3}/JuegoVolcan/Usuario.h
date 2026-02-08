@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "Arbol.h"
-#include "Lista.h"
+#include "../Configuracion/Configuracion.h"
+#include "../Primitivas/Arbol.h"
+#include "../Primitivas/Lista.h"
+
 
 #define ARCH_JUGADORES "Jugadores.dat"
 #define ARCH_INDICE    "Jugadores.idx"

@@ -94,6 +94,7 @@ int cmpIndicePorId(const void *a, const void *b)
 {
     const tIndiceJugador *ia = (const tIndiceJugador*)a;
     const tIndiceJugador *ib = (const tIndiceJugador*)b;
+
     return ia->id - ib->id;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,11 +111,13 @@ int cmpRankingPorPuntosDesc(const void *a, const void *b)
     else
         return -1;
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int cmpRankingPorId(const void *a, const void *b)
 {
     const tRanking *ra = (const tRanking*)a;
     const tRanking *rb = (const tRanking*)b;
+
     return ra->idJugador - rb->idJugador;
 }
 

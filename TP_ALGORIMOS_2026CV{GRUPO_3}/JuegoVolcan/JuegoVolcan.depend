@@ -1,0 +1,84 @@
+# depslib dependency file v1.0
+1770566829 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\arbol.c
+	"Arbol.h"
+
+1770566353 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\arbol.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770566830 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\lista.c
+	"Lista.h"
+
+1770566204 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770567899 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\main.c
+	"Volcan.h"
+
+1770568068 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\volcan.h
+	<stdio.h>
+	<stdlib.h>
+	"Usuario.h"
+
+1770567262 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\usuario.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	"Arbol.h"
+	"Lista.h"
+
+1770567221 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\usuario.c
+	"Usuario.h"
+
+1770568068 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\volcan\volcan.c
+	"Volcan.h"
+
+1770568853 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juegovolcan\main.c
+	"../Volcan/Volcan.h"
+
+1770316392 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\configuracion\configuracion.c
+	"Configuracion.h"
+
+1770568068 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\configuracion\configuracion.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770566829 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol.c
+	"Arbol.h"
+
+1770566353 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770566830 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
+	"Lista.h"
+
+1770566204 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770567221 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juegovolcan\usuario.c
+	"Usuario.h"
+
+1770569332 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juegovolcan\usuario.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	"../Configuracion/Configuracion.h"
+	"../Primitivas/Arbol.h"
+	"../Primitivas/Lista.h"
+
+1770568068 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juegovolcan\volcan.c
+	"Volcan.h"
+
+1770568068 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juegovolcan\volcan.h
+	<stdio.h>
+	<stdlib.h>
+	"Usuario.h"
+
