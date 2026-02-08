@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../Configuracion/Configuracion.h"
+#include "../Config/Configuracion.h"
 #include "../Primitivas/Arbol.h"
 #include "../Primitivas/Lista.h"
 
