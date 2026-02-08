@@ -31,6 +31,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Arbol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Arbol.h" />
+		<Unit filename="Lista.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Lista.h" />
+		<Unit filename="Usuario.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Usuario.h" />
 		<Unit filename="Volcan.c">
 			<Option compilerVar="CC" />
 		</Unit>
