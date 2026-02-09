@@ -39,6 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../Primitivas/Arbol.h" />
+		<Unit filename="../Primitivas/Cola.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Primitivas/Cola.h" />
 		<Unit filename="../Primitivas/Lista.c">
 			<Option compilerVar="CC" />
 		</Unit>

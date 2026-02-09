@@ -7,7 +7,7 @@
 #include "../Config/Configuracion.h"
 #include "../Primitivas/Arbol.h"
 #include "../Primitivas/Lista.h"
-
+#include "../Primitivas/Cola.h"
 
 #define ARCH_JUGADORES "Jugadores.dat"
 #define ARCH_INDICE    "Jugadores.idx"
