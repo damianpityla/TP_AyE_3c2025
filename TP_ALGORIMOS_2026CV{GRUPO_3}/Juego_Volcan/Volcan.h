@@ -14,5 +14,13 @@
 #define VACIO    '0'
 #define LAVA     'L'
 
+typedef struct{
+    int turno;
+    int NombreJugador;
+    int Origen;
+    int Destino;
+    //char accion[20];
+    //char resultado[30];
+}sMovimiento;
 
 #endif // VOLCAN_H_INCLUDED

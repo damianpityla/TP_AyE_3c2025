@@ -28,6 +28,9 @@ typedef tNodoLista *tLista;
 
 void CrearLista(tLista* p);
 void VaciarLista(tLista* p);
+
+int sacarPrimeroLista(tLista* pl, void* pd, unsigned tam);
+
 void RecorrerLista(const tLista* pl, tAccion Accion);
 int InsertarEnOrdenLista(tLista* pl, const void *Dato, unsigned Bytes, int Dup, tCmp Cmp, tAcum Acum);
 int OrdenarLista(tLista *p, tCmp Cmp);
