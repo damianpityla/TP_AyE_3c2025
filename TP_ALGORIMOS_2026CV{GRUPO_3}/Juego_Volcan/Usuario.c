@@ -1,12 +1,12 @@
 #include "Usuario.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRanking)
+int GenerarRanking(const char *ArchPartidas, tArbol *pIndice, tLista *pRanking)
 {
     FILE *pPartidas;
     tPartida partida;
     tRanking reg;
     tIndiceJugador clave;
-    tArbolBin *pNodo;
+    tArbol *pNodo;
 
     CrearLista(pRanking);
 
@@ -41,7 +41,7 @@ int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRankin
     return TODO_OK;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice)
+int CargarIndiceJugadores(const char *ArchJugadores, tArbol *pIndice)
 {
     tJugador jugador;
     tIndiceJugador ind;

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MINIMO(X,Y)((X)<=(Y)?(X):(Y) )
+#define MINIMO(X,Y)((X)<=(Y)?(X):(Y))
 
 typedef struct sNodoCola{
     void* info;

@@ -13,6 +13,8 @@
 #define SIN_DUPLICADOS  0
 #define CON_DUPLICADOS  1
 
+#define MINIMO(X,Y)((X)<=(Y)?(X):(Y))
+
 typedef int (*tCmp)(const void*, const void*);
 typedef void (*tAccion)(const void*);
 typedef void (*tAcum)(void *nodoInfo, const void *elem);

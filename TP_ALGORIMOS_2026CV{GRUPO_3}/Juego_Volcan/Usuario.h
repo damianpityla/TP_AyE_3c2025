@@ -54,8 +54,8 @@ typedef struct
 
 void AcumularRanking(void *nodoInfo, const void *elem);
 void MostrarRanking(const void *a);
-int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice);
-int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRanking);
+int CargarIndiceJugadores(const char *ArchJugadores, tArbol *pIndice);
+int GenerarRanking(const char *ArchPartidas, tArbol *pIndice, tLista *pRanking);
 int cmpRankingPorId(const void *a, const void *b);
 int cmpIndicePorId(const void* a, const void* b);
 int cmpRankingPorPuntosDesc(const void *a, const void *b);

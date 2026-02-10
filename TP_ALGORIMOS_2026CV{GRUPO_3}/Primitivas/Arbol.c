@@ -8,18 +8,38 @@ void CrearArbol(tArbol* pa)
 void VaciarArbol(tArbol* pa)
 {
     if(!*pa)
-        return VACIO;
+        return;
+    tNodoArbol* hijo;
 
-    while(!ListaVacia(&(*pa)->hijos))   // <- tu primitiva real acá
+    while(!sacarPrimeroLista(&(*pa)->hijos,&hijo,sizeof(tNodoArbol)))
     {
-        tNodoArbol* hijo;
-        sacarPrimeroLista(&(*pa)->hijos, &hijo, sizeof(tNodoArbol*));
         VaciarArbol(&hijo);
     }
     free((*pa)->info);
     free(*pa);
+    *pa = NULL;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int CrearNodoArbol(tNodoArbol** p, const void* pd, unsigned tam)
+{
+    if(*p != NULL)
+        return 0;
+    tNodoArbol* nue = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    if(!nue)
+        return 0;
+
+    nue->info = malloc(tam);
+    if(!nue->info)
+    {
+        free(nue);
+        return 0;
+    }
+    memcpy(nue->info,pd, tam);
+    nue->tamInfo = tam;
+    CrearLista(&nue->hijos);
+    *p = nue;
+    return TODO_OK;
+}
 
 
 
@@ -33,10 +53,7 @@ void VaciarArbol(tArbol* pa)
 
 
 
-
-
-
-
+/*
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CrearArbolBin(tArbolBin* p)
 {
@@ -108,5 +125,5 @@ tArbolBin* BusquedaEnArbolRecursivo(tArbolBin *p, const void* Dato, tCmp cmp)
         return BusquedaEnArbolRecursivo(&(*p)->hijoDer, Dato, cmp);
 
     return p;
-}
+}*/
 

@@ -12,7 +12,7 @@
 #define DUPLICADO -3
 #define ARBOL_VACIO -4
 
-
+#define MINIMO(X,Y)((X)<=(Y)?(X):(Y))
 
 typedef struct sNodoArbol
 {
@@ -23,9 +23,10 @@ typedef struct sNodoArbol
 typedef tNodoArbol* tArbol;
 
 
+void CrearArbol(tArbol* pa);
+void VaciarArbol(tArbol* pa);
 
-
-
+int CrearNodoArbol(tArbol* pa, const void* pd, unsigned tam);
 
 /*
 typedef struct sNodoArbolBin

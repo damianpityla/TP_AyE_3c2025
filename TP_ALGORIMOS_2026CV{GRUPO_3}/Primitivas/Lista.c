@@ -24,7 +24,7 @@ int sacarPrimeroLista(tLista* pl, void* pd, unsigned tam)
         return 0;
     *pl = aux->sig;
     memcpy(pd, aux->Info, MINIMO(tam,aux->TamInfo));
-    free(aux->info);
+    free(aux->Info);
     free(aux);
     return 1;
 }

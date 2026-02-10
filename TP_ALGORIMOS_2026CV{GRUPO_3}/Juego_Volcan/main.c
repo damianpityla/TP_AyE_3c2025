@@ -2,11 +2,11 @@
 
 int main()
 {
-    tArbolBin indice;
+    tArbol indice;
     tLista ranking;
     int estado;
 
-    CrearArbolBin(&indice);
+    CrearArbol(&indice);
     CrearLista(&ranking);
 
     estado = CargarIndiceJugadores(ARCH_JUGADORES, &indice); ///todavia no hay
@@ -14,7 +14,7 @@ int main()
     {
         puts("Error al cargar el archivo de indices.");
         VaciarLista(&ranking);
-        VaciarArbolBin(&indice);
+        VaciarArbol(&indice);
         return 1;
     }
 
@@ -23,14 +23,14 @@ int main()
     {
         puts("Error al generar el ranking.");
         VaciarLista(&ranking);
-        VaciarArbolBin(&indice);
+        VaciarArbol(&indice);
         return 1;
     }
     puts("\n===== RANKING DE JUGADORES =====");
     RecorrerLista(&ranking, MostrarRanking);
 
     VaciarLista(&ranking);
-    VaciarArbolBin(&indice);
+    VaciarArbol(&indice);
 
     return 0;
 }
