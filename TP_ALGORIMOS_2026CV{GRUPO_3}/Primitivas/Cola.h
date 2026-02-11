@@ -17,13 +17,13 @@ typedef struct{
               *ult;
 }tCola;
 
-void crearCola(tCola* pc);
-int colaLlena(const tCola* pc, unsigned tam);
-int ponerEnCola(tCola* pc, const void* pd, unsigned tam);
-int verPrimeroCola(const tCola* pc, void* pd, unsigned tam);
-int colaVacia(const tCola* pc);
-int sacarDeCola(tCola* pc, void* pd, unsigned tam);
-void vaciarCola(tCola* pc);
+void CrearCola(tCola* pc);
+int ColaLlena(const tCola* pc, unsigned tam);
+int PonerEnCola(tCola* pc, const void* pd, unsigned tam);
+int VerPrimeroCola(const tCola* pc, void* pd, unsigned tam);
+int ColaVacia(const tCola* pc);
+int SacarDeCola(tCola* pc, void* pd, unsigned tam);
+void VaciarCola(tCola* pc);
 
 
 #endif // COLA_H_INCLUDED

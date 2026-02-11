@@ -1,10 +1,10 @@
 #include "Cola.h"
-void crearCola(tCola* pc)
+void CrearCola(tCola* pc)
 {
     pc->pri = NULL;
     pc->ult = NULL;
 }
-int colaLlena(const tCola* pc, unsigned tam)
+int ColaLlena(const tCola* pc, unsigned tam)
 {
     tNodoCola* aux = (tNodoCola*) malloc(sizeof(tNodoCola));
     void* info = malloc(tam);
@@ -12,7 +12,7 @@ int colaLlena(const tCola* pc, unsigned tam)
     free(info);
     return aux==NULL || info==NULL;
 }
-int ponerEnCola(tCola* pc, const void* pd, unsigned tam)
+int PonerEnCola(tCola* pc, const void* pd, unsigned tam)
 {
     tNodoCola* nue = (tNodoCola*) malloc(sizeof(tNodoCola));
     if(nue==NULL || (nue->info = malloc(tam))==NULL)
@@ -30,31 +30,34 @@ int ponerEnCola(tCola* pc, const void* pd, unsigned tam)
     pc->ult = nue;
     return 1;
 }
-int verPrimeroCola(const tCola* pc, void* pd, unsigned tam)
+int VerPrimeroCola(const tCola* pc, void* pd, unsigned tam)
 {
     if(pc->pri == NULL)
         return 0;
     memcpy(pd,pc->pri->info, MINIMO(tam,pc->pri->tamInfo));
     return 1;
 }
-int colaVacia(const tCola* pc)
+int ColaVacia(const tCola* pc)
 {
     return pc->pri == NULL;
 }
-int sacarDeCola(tCola* pc, void* pd, unsigned tam)
+int SacarDeCola(tCola* pc, void* pd, unsigned tam)
 {
     tNodoCola* aux = pc->pri;
     if(aux== NULL)
         return 0;
+
     pc->pri = aux->sig;
     memcpy(pd, aux->info, MINIMO(aux->tamInfo, tam));
+
     free(aux->info);
     free(aux);
     if(pc->pri == NULL)
         pc->ult = NULL;
+
     return 1;
 }
-void vaciarCola(tCola* pc)
+void VaciarCola(tCola* pc)
 {
     while(pc->pri)
     {

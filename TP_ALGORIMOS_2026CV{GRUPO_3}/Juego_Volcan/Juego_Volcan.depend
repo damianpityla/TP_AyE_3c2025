@@ -7,42 +7,51 @@
 	<stdlib.h>
 	<string.h>
 
-1770566829 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol.c
+1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol.c
 	"Arbol.h"
 
-1770566353 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol.h
+1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-
-1770566830 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
 	"Lista.h"
 
-1770566204 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.h
+1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
+	"Lista.h"
+
+1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1770570921 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\main.c
-	<stdio.h>
-	<stdlib.h>
+1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\main.c
+	"Volcan.h"
 
-1770570921 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
+1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
 	"Usuario.h"
 
-1770570921 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
+1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
 	"../Config/Configuracion.h"
 	"../Primitivas/Arbol.h"
 	"../Primitivas/Lista.h"
+	"../Primitivas/Cola.h"
 
 1770570921 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.c
 	"Volcan.h"
 
-1770570921 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.h
+1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.h
 	<stdio.h>
 	<stdlib.h>
 	"Usuario.h"
+
+1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.c
+	"Cola.h"
+
+1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
 

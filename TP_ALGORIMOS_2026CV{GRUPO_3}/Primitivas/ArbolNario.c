@@ -1,30 +1,30 @@
 #include "Arbol.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void CrearArbol(tArbol *)
+void CrearArbolNario(tArbolNario *p)
 {
-    *pa = NULL;
+    *p = NULL;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void VaciarArbol(tArbol *p)
+void VaciarArbolNario(tArbolNario *p)
 {
-    if(!*pa)
+    if(!*p)
         return;
-    tNodoArbol* hijo;
+    tNodoArbolNario* hijo;
 
-    while(!sacarPrimeroLista(&(*pa)->hijos,&hijo,sizeof(tNodoArbol)))
+    while(!sacarPrimeroLista(&(*p)->hijos,&hijo,sizeof(tNodoArbolNario)))
     {
         VaciarArbol(&hijo);
     }
-    free((*pa)->info);
-    free(*pa);
-    *pa = NULL;
+    free((*p)->info);
+    free(*p);
+    *p = NULL;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CrearNodoArbol(tNodoArbol** p, const void* pd, unsigned tam)
+int CrearNodoArbolNario(tNodoArbolNario** p, const void* pd, unsigned tam)
 {
     if(*p != NULL)
         return 0;
-    tNodoArbol* nue = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    tNodoArbolNario* nue = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
     if(!nue)
         return 0;
 
