@@ -14,6 +14,7 @@
 #define VACIO    '0'
 #define LAVA     'L'
 
+
 typedef struct{
     int turno;
     int NombreJugador;

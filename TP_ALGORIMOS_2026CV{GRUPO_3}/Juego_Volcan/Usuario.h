@@ -1,11 +1,18 @@
 #ifndef USUARIO_H_INCLUDED
 #define USUARIO_H_INCLUDED
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <windows.h>
+
 #include "../Config/Configuracion.h"
-#include "../Primitivas/Arbol.h"
+#include "../Primitivas/Arbol_Binario.h"
+#include "../Primitivas/Arbol_N_ario.h"
 #include "../Primitivas/Lista.h"
 #include "../Primitivas/Cola.h"
 
@@ -19,8 +26,6 @@
 #define ERROR_ARCHIVO -1
 
 #define EPSILON 1e-4f
-
-
 
 typedef struct
 {
@@ -52,11 +57,16 @@ typedef struct
     int partidas; ///ver si queremos guardar las partidas jugadas o no
 }tRanking;
 
+
+void Menu_Online();
+void Menu_Offline();
 void AcumularRanking(void *nodoInfo, const void *elem);
 void MostrarRanking(const void *a);
-int CargarIndiceJugadores(const char *ArchJugadores, tArbol *pIndice);
-int GenerarRanking(const char *ArchPartidas, tArbol *pIndice, tLista *pRanking);
+int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice);
+int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRanking);
 int cmpRankingPorId(const void *a, const void *b);
 int cmpIndicePorId(const void* a, const void* b);
 int cmpRankingPorPuntosDesc(const void *a, const void *b);
+
+
 #endif // USUARIO_H_INCLUDED

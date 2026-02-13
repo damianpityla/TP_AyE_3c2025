@@ -1,20 +1,22 @@
 #include "Volcan.h"
-
+#include "../Primitivas/Arbol_Binario.h"
 int main()
 {
-    tArbol indice;
+    tArbolBin indice;
     tLista ranking;
     int estado;
 
-    CrearArbol(&indice);
+    CrearArbolBin(&indice);
     CrearLista(&ranking);
+
+    Menu_Offline();
 
     estado = CargarIndiceJugadores(ARCH_JUGADORES, &indice); ///todavia no hay
     if(estado != TODO_OK)
     {
         puts("Error al cargar el archivo de indices.");
         VaciarLista(&ranking);
-        VaciarArbol(&indice);
+        VaciarArbolBin(&indice);
         return 1;
     }
 
@@ -23,14 +25,14 @@ int main()
     {
         puts("Error al generar el ranking.");
         VaciarLista(&ranking);
-        VaciarArbol(&indice);
+        VaciarArbolBin(&indice);
         return 1;
     }
     puts("\n===== RANKING DE JUGADORES =====");
     RecorrerLista(&ranking, MostrarRanking);
 
     VaciarLista(&ranking);
-    VaciarArbol(&indice);
+    VaciarArbolBin(&indice);
 
     return 0;
 }

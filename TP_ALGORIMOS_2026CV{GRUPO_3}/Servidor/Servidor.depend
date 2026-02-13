@@ -73,3 +73,50 @@
 1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
 	"Lista.h"
 
+1770939942 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.c
+	"Arbol_N_ario.h"
+
+1770939942 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Lista.h"
+
+1770753868 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770939942 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.c
+	"Cola.h"
+
+1770939942 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770754172 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
+	"Lista.h"
+
+1770939942 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\usuario.c
+	"Usuario.h"
+
+1770939942 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\usuario.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	"../Config/Configuracion.h"
+	"../Primitivas/Lista.h"
+	"../Primitivas/Cola.h"
+	"../Primitivas/Arbol_Binario.h"
+
+1770571492 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1770941814 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_binario.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

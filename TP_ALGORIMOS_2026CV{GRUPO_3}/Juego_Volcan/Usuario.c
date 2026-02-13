@@ -1,12 +1,51 @@
 #include "Usuario.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int GenerarRanking(const char *ArchPartidas, tArbol *pIndice, tLista *pRanking)
+
+
+void activarColores() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) return;
+
+    DWORD dwMode = 0;
+    // Agregamos (HANDLE) para asegurar compatibilidad
+    GetConsoleMode(hOut, &dwMode);
+
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
+
+void Menu_Offline()
+{
+    int altura = 50;
+    int ancho = 50;
+    activarColores();
+    printf("\x1b[96m");
+
+    printf("%c", 218);
+    for(int i = 0; i < ancho; i++) printf("%c", 196);
+    printf("%c\n", 191);
+
+    for(int i = 0; i < altura; i++)
+    {
+        printf("%c", 179);
+        for(int j = 0; j < ancho; j++) printf(" ");
+        printf("%c\n", 179);
+    }
+    printf("%c", 192);
+    for(int i = 0; i < ancho; i++) printf("%c", 196);
+    printf("%c\n", 217);
+    printf("\x1b[0m");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRanking)
 {
     FILE *pPartidas;
     tPartida partida;
     tRanking reg;
     tIndiceJugador clave;
-    tArbol *pNodo;
+    tArbolBin *pNodo;
 
     CrearLista(pRanking);
 
@@ -22,10 +61,10 @@ int GenerarRanking(const char *ArchPartidas, tArbol *pIndice, tLista *pRanking)
         reg.partidas    = 1;
 
         clave.id = reg.idJugador;
-        pNodo = BusquedaEnArbolRecursivo(pIndice, &clave, cmpIndicePorId);
+        pNodo = BusquedaEnArbolBin(pIndice, &clave, cmpIndicePorId);
 
         if(pNodo)
-            strcpy(reg.Nombre, ((tIndiceJugador*)(*pNodo)->info)->nombre);
+            strcpy(reg.Nombre, ((tIndiceJugador*)(*pNodo)->Info)->nombre);
         else
             strcpy(reg.Nombre, "DESCONOCIDO");
 
@@ -41,7 +80,7 @@ int GenerarRanking(const char *ArchPartidas, tArbol *pIndice, tLista *pRanking)
     return TODO_OK;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CargarIndiceJugadores(const char *ArchJugadores, tArbol *pIndice)
+int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice)
 {
     tJugador jugador;
     tIndiceJugador ind;
@@ -60,7 +99,7 @@ int CargarIndiceJugadores(const char *ArchJugadores, tArbol *pIndice)
         strncpy(ind.nombre, jugador.nombre, sizeof(ind.nombre) - 1);
         ind.nombre[sizeof(ind.nombre) - 1] = '\0';
 
-        InsertarEnArbolRecursivo(pIndice, &ind, sizeof(tIndiceJugador), cmpIndicePorId);
+        InsertarEnArbolBin(pIndice, &ind, sizeof(tIndiceJugador), cmpIndicePorId);
 
         NumReg++;
         fread(&jugador, sizeof(tJugador), 1, pJugadores);
