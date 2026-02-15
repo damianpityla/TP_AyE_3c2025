@@ -16,7 +16,7 @@
 
 
 #define OPC_OFFLINE 2
-#define PIXEL ((unsigned char)254)
+
 
 #include "../Config/Configuracion.h"
 #include "../Primitivas/Arbol_Binario.h"
@@ -46,7 +46,8 @@
 #define TODOOK 1
 
 #define LINEA ""
-
+#define TAM_TITULO 6
+#define TAM_ESTADO 14
 typedef struct
 {
     int id;

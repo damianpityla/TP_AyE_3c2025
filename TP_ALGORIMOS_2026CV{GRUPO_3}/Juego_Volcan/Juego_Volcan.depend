@@ -96,17 +96,19 @@
 1770754172 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
 	"Lista.h"
 
-1771141812 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
+1771146751 source:c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
 	"Usuario.h"
 	"../Servidor/Servidor.h"
 
-1771140882 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
+1771145777 c:\users\administrator\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
 	<stdio.h>
 	<stdlib.h>
 	<ctype.h>
 	<string.h>
 	<conio.h>
+	<winsock2.h>
 	<windows.h>
+	<math.h>
 	"../Config/Configuracion.h"
 	"../Primitivas/Arbol_Binario.h"
 	"../Primitivas/Arbol_N_ario.h"

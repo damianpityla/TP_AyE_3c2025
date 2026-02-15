@@ -14,174 +14,167 @@
 int MenuOffline(void)
 {
     const char* opciones[OPC_OFFLINE] = { "JUGAR", "SALIR" };
+    char linea[TAMLINEA];
     int opcion = 0, salir = 0;
-    int i, j;
+    int i, j,len,leftPad, tecla,ext;
 
-    const int ANCHO = 90;                 // ancho interno del cuadro
-    const char* MARGEN = "            ";  // margen izquierdo del cuadro
 
-    unsigned char B = 254; // "cuadradito" (pixel)
 
-    // Banner (5 líneas) hecho con caracteres, después reemplazamos '#' por B
-    // (así queda prolijo y centrable)
-    const char* banner[5] =
-    {
-        "  ###### #  # #### #### #####   ###   #### #      #    # ##### #     ###   ##### ##    #  ",
-        "     #   #  # #    #    #   #   #  #  #    #      #    # #   # #    #   #  #   # # #   #  ",
-        "     #   #  # #### # ## #   #   #   # ###  #      #    # #   # #    #      ##### #  #  #  ",
-        "  #  #   #  # #    #  # #   #   #  #  #    #       #  #  #   # #    #   #  #   # #   # #  ",
-        "  ####   #### #### #### #####   ###   #### ####     ##   ##### ####  ###   #   # #    ##  "
-    };
 
-    system("color 0C"); // rojo sobre negro
+    const int ANCHO = 100;
+    const char* MARGEN = "          ";//Margen por fuera del Recuadro
+
+    //siento que asi le da un estilo de Juego
+    char titulo[TAM_TITULO][500] = {"  ###### #   # #### ##### #####    #####  ##### #      #      # ##### #      #####  ###### ##    #  ",
+                                 "      #  #   # #    #     #   #    #    # #     #      #      # #   # #     #     # #    # # #   #  ",
+                                 "      #  #   # ###  # ### #   #    #    # ###   #       #    #  #   # #     #       ###### #  #  #  ",
+                                 "  #   #  #   # #    #   # #   #    #    # #     #        #  #   #   # #     #     # #    # #   # #  ",
+                                 "  #####  ##### #### ### # #####    #####  ##### #####     ##    ##### #####  #####  #    # #    ##  ",
+                                 "                        #                                                                           "
+                               };
+
+    system("color 04");//Este Color esta Bueno
 
     while(!salir)
     {
         system("cls");
+        printf("\n");
 
-        printf("\n\n\n");
-
-        // ┌──────────────────────────────┐
+        // ┌───┐ asi se hace un techo
         printf("%s%c", MARGEN, 201);
         for(j = 0; j < ANCHO; j++) printf("%c", 205);
         printf("%c\n", 187);
 
-        // 1 línea vacía
+        // hacemos un salto de linea
         printf("%s%c", MARGEN, 186);
-        for(j = 0; j < ANCHO; j++) printf(" ");
+        for(j = 0; j < ANCHO; j++)
+            printf(" ");
         printf("%c\n", 186);
 
-        // ====== IMPRIMIR BANNER CENTRADO ======
-        for(i = 0; i < 5; i++)
+        /// TITULO "JUEGO DEL VOLCAN"
+        for(i = 0; i < TAM_TITULO; i++)
         {
-            int len = (int)strlen(banner[i]);
-            int leftPad = (ANCHO - len) / 2; // centra dentro del cuadro
+            len = strlen(titulo[i]);
+            leftPad = (ANCHO - len) / 2; // para centrar dentro del Recuadro
 
             printf("%s%c", MARGEN, 186);
 
             // espacios a la izquierda
-            for(j = 0; j < leftPad; j++) printf(" ");
+            for(j = 0; j < leftPad; j++)
+                printf(" ");
 
-            // banner: cambiamos '#' por B
             for(j = 0; j < len; j++)
-            {
-                if(banner[i][j] == '#')
-                    putchar(B);
-                else
-                    putchar(' ');
-            }
+                printf("%c",titulo[i][j]);// Imprimimos el Titulo
 
             // completar el resto hasta ANCHO
-            {
-                int usados = leftPad + len;
-                for(j = usados; j < ANCHO; j++) printf(" ");
-            }
-
+            for(j = leftPad + len; j < ANCHO; j++)
+                printf(" ");
             printf("%c\n", 186);
         }
 
         // línea vacía
         printf("%s%c", MARGEN, 186);
-        for(j = 0; j < ANCHO; j++) printf(" ");
+        for(j = 0; j < ANCHO; j++)
+            printf(" ");
         printf("%c\n", 186);
 
-        // subtítulo centrado
-        {
-            const char* sub = "OFFLINE";
-            int len = (int)strlen(sub);
-            int leftPad = (ANCHO - len) / 2;
+        //ESTADO DEL MENU ->"ESTADO OFFLINE" = 14 CARACTERES
+        leftPad = (ANCHO - TAM_ESTADO) / 2;
 
-            printf("%s%c", MARGEN, 186);
-            for(j = 0; j < leftPad; j++) printf(" ");
-            printf("%s", sub);
-            for(j = leftPad + len; j < ANCHO; j++) printf(" ");
-            printf("%c\n", 186);
-        }
-
-        // 1 línea vacía
         printf("%s%c", MARGEN, 186);
-        for(j = 0; j < ANCHO; j++) printf(" ");
+        for(j = 0; j < leftPad ; j++)
+            printf(" ");
+        printf("ESTADO OFFLINE");
+        for(j = leftPad + TAM_ESTADO; j < ANCHO; j++)
+            printf(" ");
+        printf("%c\n", 186);
+
+        //Salto de Linea
+        printf("%s%c", MARGEN, 186);
+        for(j = 0; j < ANCHO; j++)
+            printf(" ");
         printf("%c\n", 186);
 
         // ====== opciones (centradas) ======
         for(i = 0; i < OPC_OFFLINE; i++)
         {
-            char linea[64];
 
             if(i == opcion)
                 snprintf(linea, sizeof(linea), "-> %s", opciones[i]);
             else
                 snprintf(linea, sizeof(linea), "   %s", opciones[i]);
 
-            {
-                int len = (int)strlen(linea);
-                int leftPad = (ANCHO - len) / 2;
+            len = strlen(linea);
+            leftPad = (ANCHO - len) / 2;
 
-                printf("%s%c", MARGEN, 186);
-                for(j = 0; j < leftPad; j++) printf(" ");
-                printf("%s", linea);
-                for(j = leftPad + len; j < ANCHO; j++) printf(" ");
-                printf("%c\n", 186);
-            }
+            printf("%s%c", MARGEN, 186);
+            for(j = 0; j < leftPad; j++)
+                printf(" ");
+
+            printf("%s", linea);
+
+            for(j = leftPad + len; j < ANCHO; j++)
+                printf(" ");
+            printf("%c\n", 186);
         }
 
         // espacio abajo (ajustá a gusto)
-        for(i = 0; i < 8; i++)
-        {
-            printf("%s%c", MARGEN, 186);
-            for(j = 0; j < ANCHO; j++) printf(" ");
-            printf("%c\n", 186);
-        }
+        printf("%s%c", MARGEN, 186);
+        for(j = 0; j < ANCHO; j++) printf(" ");
+        printf("%c\n", 186);
 
         // └──────────────────────────────┘
         printf("%s%c", MARGEN, 200);
         for(j = 0; j < ANCHO; j++) printf("%c", 205);
         printf("%c\n", 188);
 
-        // ====== controles ======
+        ///CONTROLES IMPORTANTISIMO
+        tecla = getch();
+        if (tecla == 0 || tecla == 224)
         {
-            int tecla = getch();
+            ext = getch();
+            if (ext == 72)
+                tecla = 'w';
+            if (ext == 80)
+                tecla = 's';
+        }
 
-// soporte flechas (tecla extendida)
-            if (tecla == 0 || tecla == 224)
+        if (tolower(tecla) == 'w')
+        {
+            opcion--;
+            if(opcion < 0)
+                opcion = OPC_OFFLINE - 1;
+        }
+        else if (tolower(tecla) == 's')
+        {
+            opcion++;
+            if(opcion >= OPC_OFFLINE)
+                opcion = 0;
+        }
+        else if (tecla == 13) // toco Enter
+        {
+            if (opcion == 0)
             {
-                int ext = getch();
-                if (ext == 72) tecla = 'w'; // ↑
-                if (ext == 80) tecla = 's'; // ↓
+                ///LOGICA DEL JUEGO QUE DEBE ANDAR TANTO PARA ONLINE COMO OFFLINE///
+                system("cls");
+                printf("\n\n\n\t\t\tElegiste JUGAR (offline)\n");
+                printf("\t\t\t(aca llamas a jugar())\n");
+                printf("\n\t\t\tPresione una tecla para volver...");
+                getch();
             }
-
-            if (tolower(tecla) == 'w')
+            else
             {
-                opcion--;
-                if (opcion < 0) opcion = OPC_OFFLINE - 1;
-            }
-            else if (tolower(tecla) == 's')
-            {
-                opcion++;
-                if (opcion >= OPC_OFFLINE) opcion = 0;
-            }
-            else if (tecla == 13) // ENTER
-            {
-                if (opcion == 0)
-                {
-                    system("cls");
-                    printf("\n\n\n\t\t\tElegiste JUGAR (offline)\n");
-                    printf("\t\t\t(aca llamas a jugar())\n");
-                    printf("\n\t\t\tPresione una tecla para volver...");
-                    getch();
-                }
-                else
-                {
-                    system("cls");
-                    printf("\n\n\n\t\t\tSaliendo...\n");
-                    Sleep(500);
-                    salir = 1;
-                }
+                ///SALIS DEL WHILE Y POR LO TANTO SALIS DEL MENU Y BUENO TERMINA EL JUEGO///
+                system("cls");
+                printf("\n\n\n\t\t\tSaliendo...\n");
+                Sleep(1000);
+                salir = 1;
             }
         }
+
     }
 
-    return 0;
+    return TODO_OK;
 }
 ////********************************************************************************************************************************************************///
 ////********************************************************************************************************************************************************///
