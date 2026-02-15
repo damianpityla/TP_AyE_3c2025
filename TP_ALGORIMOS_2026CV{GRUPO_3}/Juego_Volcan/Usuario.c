@@ -25,13 +25,12 @@ int MenuOffline(void)
     const char* MARGEN = "          ";//Margen por fuera del Recuadro
 
     //siento que asi le da un estilo de Juego
-    char titulo[TAM_TITULO][500] = {"  ###### #   # #### ##### #####    #####  ##### #      #      # ##### #      #####  ###### ##    #  ",
-                                 "      #  #   # #    #     #   #    #    # #     #      #      # #   # #     #     # #    # # #   #  ",
-                                 "      #  #   # ###  # ### #   #    #    # ###   #       #    #  #   # #     #       ###### #  #  #  ",
-                                 "  #   #  #   # #    #   # #   #    #    # #     #        #  #   #   # #     #     # #    # #   # #  ",
-                                 "  #####  ##### #### ### # #####    #####  ##### #####     ##    ##### #####  #####  #    # #    ##  ",
-                                 "                        #                                                                           "
-                               };
+    char titulo[TAM_TITULO][101] = {"  ###### #   # #### ##### #####    #####  ##### #      #      # ##### #      #####  ###### ##    #  ",
+                                    "      #  #   # #    #     #   #    #    # #     #      #      # #   # #     #     # #    # # #   #  ",
+                                    "      #  #   # ###  # ### #   #    #    # ###   #       #    #  #   # #     #       ###### #  #  #  ",
+                                    "  #   #  #   # #    #   # #   #    #    # #     #        #  #   #   # #     #     # #    # #   # #  ",
+                                    "  #####  ##### #### ### # #####    #####  ##### #####     ##    ##### #####  #####  #    # #    ##  ",
+                                    "                        #                                                                           "};
 
     system("color 04");//Este Color esta Bueno
 
@@ -98,7 +97,7 @@ int MenuOffline(void)
         // ====== opciones (centradas) ======
         for(i = 0; i < OPC_OFFLINE; i++)
         {
-
+            //probando snprintf, igual sino se puede lo cambio y ya esta
             if(i == opcion)
                 snprintf(linea, sizeof(linea), "-> %s", opciones[i]);
             else
@@ -171,9 +170,7 @@ int MenuOffline(void)
                 salir = 1;
             }
         }
-
     }
-
     return TODO_OK;
 }
 ////********************************************************************************************************************************************************///
