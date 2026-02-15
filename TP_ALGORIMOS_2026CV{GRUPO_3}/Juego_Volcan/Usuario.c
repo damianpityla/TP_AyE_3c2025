@@ -1,43 +1,192 @@
 #include "Usuario.h"
+#include "../Servidor/Servidor.h"
+////********************************************************************************************************************************************************///
+////********************************************************************************************************************************************************///
+////********************************************************************************************************************************************************///
+////********************************************************************************************************************************************************///
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------MENU ONLINE-------------//
 
+//-------------------MENU OFFLINE------------------------//
 
-void activarColores() {
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hOut == INVALID_HANDLE_VALUE) return;
+#define OPC_OFFLINE 2
 
-    DWORD dwMode = 0;
-    // Agregamos (HANDLE) para asegurar compatibilidad
-    GetConsoleMode(hOut, &dwMode);
-
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
-}
-
-void Menu_Offline()
+int MenuOffline(void)
 {
-    int altura = 50;
-    int ancho = 50;
-    activarColores();
-    printf("\x1b[96m");
+    const char* opciones[OPC_OFFLINE] = { "JUGAR", "SALIR" };
+    int opcion = 0, salir = 0;
+    int i, j;
 
-    printf("%c", 218);
-    for(int i = 0; i < ancho; i++) printf("%c", 196);
-    printf("%c\n", 191);
+    const int ANCHO = 90;                 // ancho interno del cuadro
+    const char* MARGEN = "            ";  // margen izquierdo del cuadro
 
-    for(int i = 0; i < altura; i++)
+    unsigned char B = 254; // "cuadradito" (pixel)
+
+    // Banner (5 líneas) hecho con caracteres, después reemplazamos '#' por B
+    // (así queda prolijo y centrable)
+    const char* banner[5] =
     {
-        printf("%c", 179);
-        for(int j = 0; j < ancho; j++) printf(" ");
-        printf("%c\n", 179);
-    }
-    printf("%c", 192);
-    for(int i = 0; i < ancho; i++) printf("%c", 196);
-    printf("%c\n", 217);
-    printf("\x1b[0m");
-}
+        "  ###### #  # #### #### #####   ###   #### #      #    # ##### #     ###   ##### ##    #  ",
+        "     #   #  # #    #    #   #   #  #  #    #      #    # #   # #    #   #  #   # # #   #  ",
+        "     #   #  # #### # ## #   #   #   # ###  #      #    # #   # #    #      ##### #  #  #  ",
+        "  #  #   #  # #    #  # #   #   #  #  #    #       #  #  #   # #    #   #  #   # #   # #  ",
+        "  ####   #### #### #### #####   ###   #### ####     ##   ##### ####  ###   #   # #    ##  "
+    };
 
+    system("color 0C"); // rojo sobre negro
+
+    while(!salir)
+    {
+        system("cls");
+
+        printf("\n\n\n");
+
+        // ┌──────────────────────────────┐
+        printf("%s%c", MARGEN, 201);
+        for(j = 0; j < ANCHO; j++) printf("%c", 205);
+        printf("%c\n", 187);
+
+        // 1 línea vacía
+        printf("%s%c", MARGEN, 186);
+        for(j = 0; j < ANCHO; j++) printf(" ");
+        printf("%c\n", 186);
+
+        // ====== IMPRIMIR BANNER CENTRADO ======
+        for(i = 0; i < 5; i++)
+        {
+            int len = (int)strlen(banner[i]);
+            int leftPad = (ANCHO - len) / 2; // centra dentro del cuadro
+
+            printf("%s%c", MARGEN, 186);
+
+            // espacios a la izquierda
+            for(j = 0; j < leftPad; j++) printf(" ");
+
+            // banner: cambiamos '#' por B
+            for(j = 0; j < len; j++)
+            {
+                if(banner[i][j] == '#')
+                    putchar(B);
+                else
+                    putchar(' ');
+            }
+
+            // completar el resto hasta ANCHO
+            {
+                int usados = leftPad + len;
+                for(j = usados; j < ANCHO; j++) printf(" ");
+            }
+
+            printf("%c\n", 186);
+        }
+
+        // línea vacía
+        printf("%s%c", MARGEN, 186);
+        for(j = 0; j < ANCHO; j++) printf(" ");
+        printf("%c\n", 186);
+
+        // subtítulo centrado
+        {
+            const char* sub = "OFFLINE";
+            int len = (int)strlen(sub);
+            int leftPad = (ANCHO - len) / 2;
+
+            printf("%s%c", MARGEN, 186);
+            for(j = 0; j < leftPad; j++) printf(" ");
+            printf("%s", sub);
+            for(j = leftPad + len; j < ANCHO; j++) printf(" ");
+            printf("%c\n", 186);
+        }
+
+        // 1 línea vacía
+        printf("%s%c", MARGEN, 186);
+        for(j = 0; j < ANCHO; j++) printf(" ");
+        printf("%c\n", 186);
+
+        // ====== opciones (centradas) ======
+        for(i = 0; i < OPC_OFFLINE; i++)
+        {
+            char linea[64];
+
+            if(i == opcion)
+                snprintf(linea, sizeof(linea), "-> %s", opciones[i]);
+            else
+                snprintf(linea, sizeof(linea), "   %s", opciones[i]);
+
+            {
+                int len = (int)strlen(linea);
+                int leftPad = (ANCHO - len) / 2;
+
+                printf("%s%c", MARGEN, 186);
+                for(j = 0; j < leftPad; j++) printf(" ");
+                printf("%s", linea);
+                for(j = leftPad + len; j < ANCHO; j++) printf(" ");
+                printf("%c\n", 186);
+            }
+        }
+
+        // espacio abajo (ajustá a gusto)
+        for(i = 0; i < 8; i++)
+        {
+            printf("%s%c", MARGEN, 186);
+            for(j = 0; j < ANCHO; j++) printf(" ");
+            printf("%c\n", 186);
+        }
+
+        // └──────────────────────────────┘
+        printf("%s%c", MARGEN, 200);
+        for(j = 0; j < ANCHO; j++) printf("%c", 205);
+        printf("%c\n", 188);
+
+        // ====== controles ======
+        {
+            int tecla = getch();
+
+// soporte flechas (tecla extendida)
+            if (tecla == 0 || tecla == 224)
+            {
+                int ext = getch();
+                if (ext == 72) tecla = 'w'; // ↑
+                if (ext == 80) tecla = 's'; // ↓
+            }
+
+            if (tolower(tecla) == 'w')
+            {
+                opcion--;
+                if (opcion < 0) opcion = OPC_OFFLINE - 1;
+            }
+            else if (tolower(tecla) == 's')
+            {
+                opcion++;
+                if (opcion >= OPC_OFFLINE) opcion = 0;
+            }
+            else if (tecla == 13) // ENTER
+            {
+                if (opcion == 0)
+                {
+                    system("cls");
+                    printf("\n\n\n\t\t\tElegiste JUGAR (offline)\n");
+                    printf("\t\t\t(aca llamas a jugar())\n");
+                    printf("\n\t\t\tPresione una tecla para volver...");
+                    getch();
+                }
+                else
+                {
+                    system("cls");
+                    printf("\n\n\n\t\t\tSaliendo...\n");
+                    Sleep(500);
+                    salir = 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+////********************************************************************************************************************************************************///
+////********************************************************************************************************************************************************///
+////********************************************************************************************************************************************************///
+////********************************************************************************************************************************************************///
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRanking)
 {

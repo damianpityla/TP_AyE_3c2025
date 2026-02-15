@@ -9,7 +9,10 @@ int main()
     CrearArbolBin(&indice);
     CrearLista(&ranking);
 
-    Menu_Offline();
+    if(!MenuOffline())
+    {
+        printf("\nError");
+    }
 
     estado = CargarIndiceJugadores(ARCH_JUGADORES, &indice); ///todavia no hay
     if(estado != TODO_OK)

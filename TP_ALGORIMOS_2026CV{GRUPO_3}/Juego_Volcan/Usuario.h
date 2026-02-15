@@ -7,8 +7,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <ctype.h>
+#include <string.h>
+#include <conio.h>
+#include <winsock2.h>
 #include <windows.h>
+#include <math.h>
+
+
+#define OPC_OFFLINE 2
+#define PIXEL ((unsigned char)254)
 
 #include "../Config/Configuracion.h"
 #include "../Primitivas/Arbol_Binario.h"
@@ -26,6 +34,18 @@
 #define ERROR_ARCHIVO -1
 
 #define EPSILON 1e-4f
+
+
+#define OPCONLINE 4
+#define OPCOFFLINE 2
+
+#define BUFFER_SIZE 1024
+#define TAMCAMPO 50
+#define TAMLINEA 256
+
+#define TODOOK 1
+
+#define LINEA ""
 
 typedef struct
 {
@@ -58,8 +78,9 @@ typedef struct
 }tRanking;
 
 
-void Menu_Online();
-void Menu_Offline();
+///////MENU OFFLINE
+int MenuOffline(void);
+
 void AcumularRanking(void *nodoInfo, const void *elem);
 void MostrarRanking(const void *a);
 int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice);
