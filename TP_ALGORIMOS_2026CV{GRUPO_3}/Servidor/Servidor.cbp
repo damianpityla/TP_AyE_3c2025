@@ -35,14 +35,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../Juego_Volcan/Usuario.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Juego_Volcan/Usuario.h" />
+		<Unit filename="../Juego_Volcan/Volcan.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Juego_Volcan/Volcan.h" />
 		<Unit filename="../Primitivas/Arbol_Binario.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../Primitivas/Arbol_Binario.h" />
-		<Unit filename="../Primitivas/Arbol_N_ario.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Primitivas/Arbol_N_ario.h" />
 		<Unit filename="../Primitivas/Cola.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -55,10 +59,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Servidor.h" />
-		<Unit filename="Usuario.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="Usuario.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

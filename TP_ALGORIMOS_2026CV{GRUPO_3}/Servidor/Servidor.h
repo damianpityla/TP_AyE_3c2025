@@ -7,7 +7,7 @@
 
 #include "../Primitivas/Cola.h"
 #include "../Primitivas/Arbol_Binario.h"
-#include "Usuario.h"
+#include "../Juego_Volcan/Usuario.h"
 
 
 int cmpIndicePorNombre(const void *a, const void *b);

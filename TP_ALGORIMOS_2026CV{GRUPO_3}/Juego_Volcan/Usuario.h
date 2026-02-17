@@ -36,8 +36,8 @@
 #define EPSILON 1e-4f
 
 
-#define OPCONLINE 4
-#define OPCOFFLINE 2
+#define OPC_ONLINE 4
+#define OPC_OFFLINE 2
 
 #define BUFFER_SIZE 1024
 #define TAMCAMPO 50
@@ -47,7 +47,9 @@
 
 #define LINEA ""
 #define TAM_TITULO 6
-#define TAM_ESTADO 14
+#define TAM_ESTADO_OFFLINE 14
+#define TAM_ESTADO_ONLINE 13
+
 typedef struct
 {
     int id;
@@ -79,8 +81,11 @@ typedef struct
 }tRanking;
 
 
-///////MENU OFFLINE
-int MenuOffline(void);
+///////MENU
+int Menu();
+
+int MenuOffLine();/// SEGURO ACA VAYA EL SOCKET PERO NO SE BIEN BIEN
+int MenuOnLine();
 
 void AcumularRanking(void *nodoInfo, const void *elem);
 void MostrarRanking(const void *a);
