@@ -134,4 +134,43 @@ int OrdenarLista(tLista* p, tCmp cmp)
 
     return TODO_OK;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int PonerAlFinalEnLista(tLista *p, const void *Dato, unsigned Bytes)
+{
+    tNodoLista *nue;
 
+    while(*p)
+        p = &(*p)->sig;
+
+    if(!(nue = (tNodoLista *)malloc(sizeof(tNodoLista))))
+        return SIN_MEM;
+
+    if(!(nue->Info = malloc(Bytes)))
+    {
+        free(nue);
+        return SIN_MEM;
+    }
+
+    memcpy(nue->Info, Dato, Bytes);
+    nue->TamInfo = Bytes;
+
+    nue->sig = *p;
+    *p = nue;
+
+    return TODO_OK;
+}
+///esta es como strchr
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int BuscarPrimeroCondicionLista(const tLista* p, void* Dato, unsigned Bytes, tCondicion Condicion, const void *Contexto)
+{
+    while(*p)
+    {
+        if(Condicion((*p)->Info, Contexto))
+        {
+            memcpy(Dato, (*p)->Info, MINIMO(Bytes, (*p)->TamInfo));
+            return 1;
+        }
+        p = &(*p)->sig;
+    }
+    return 0;
+}

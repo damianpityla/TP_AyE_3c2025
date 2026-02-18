@@ -20,15 +20,14 @@
 
 #define ARCH_CONFIG "config.txt"
 
-typedef struct
-{
+typedef struct sConfig {
     int altura_maxima;
     int max_conexiones;
     int vidas_iniciales;
     int vidas_extra;
     int criaturas;
     int premios;
-}tConfig;
+} tConfig;
 
 int CrearArchivoConfiguracion(const char *ArchConfiguracion);
 int CargarConfiguracion(const char *ArchConfiguracion, tConfig *config);

@@ -9,9 +9,10 @@ void VaciarArbolNario(tArbolNario *p)
 {
     if(!*p)
         return;
+
     tNodoArbolNario* hijo;
 
-    while(!sacarPrimeroLista(&(*p)->hijos, &hijo, sizeof(tNodoArbolNario)))
+    while(sacarPrimeroLista(&(*p)->hijos, &hijo, sizeof(tNodoArbolNario *)))
     {
         VaciarArbolNario(&hijo);
     }
@@ -20,98 +21,108 @@ void VaciarArbolNario(tArbolNario *p)
     *p = NULL;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CrearNodoArbolNario(tNodoArbolNario **p, const void* pd, unsigned tam)
+int CrearNodoArbolNario(tNodoArbolNario **pNodo, const void *info, unsigned tam)
 {
-    if(*p != NULL)
-        return 0;
-    tNodoArbolNario* nue = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
-    if(!nue)
-        return 0;
+    *pNodo = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
+    if (!(*pNodo)) return 0;
 
-    nue->info = malloc(tam);
-    if(!nue->info)
-    {
-        free(nue);
+    (*pNodo)->info = malloc(tam);
+    if (!((*pNodo)->info)) {
+        free(*pNodo);
         return 0;
     }
-    memcpy(nue->info,pd, tam);
-    nue->tamInfo = tam;
-    CrearLista(&nue->hijos);
-    *p = nue;
-    return TODO_OK;
-}
 
-/*
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void CrearArbolBin(tArbolBin* p)
-{
-    *p = NULL;
+    memcpy((*pNodo)->info, info, tam);
+
+    // ESTA LÍNEA ES LA QUE FALTA:
+    (*pNodo)->hijos = NULL;
+
+    return 1;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void VaciarArbolBin(tArbolBin* p)
+int EsHoja(const tNodoArbolNario* Nodo)
 {
-    if(*p)
+    int esHoja = 0;
+
+    if(Nodo)
     {
-        VaciarArbolBin(&(*p)->hijoIzq);
-        VaciarArbolBin(&(*p)->hijoDer);
-        free((*p)->info);
-        free(*p);
-        *p = NULL;
-    }
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int InsertarEnArbolRecursivo(tArbolBin *p, const void* Dato, unsigned Bytes, tCmp cmp)
-{
-    tNodoArbolBin* nue;
-    int resCmp;
-
-    if(*p == NULL)
-    {
-        nue = (tNodoArbolBin*)malloc(sizeof(tNodoArbolBin));
-        if(!nue)
-            return SIN_MEM;
-
-        nue->info = malloc(Bytes);
-        if(!nue->info)
+        if(Nodo->hijos == NULL)
         {
-            free(nue);
-            return SIN_MEM;
+            esHoja = 1;
         }
-
-        memcpy(nue->info, Dato, Bytes);
-        nue->tamInfo = Bytes;
-        nue->hijoDer = NULL;
-        nue->hijoIzq = NULL;
-        *p = nue;
-        return TODO_OK;
     }
 
-    resCmp = cmp((*p)->info, Dato);
-
-    if(resCmp > 0)
-        return InsertarEnArbolRecursivo(&(*p)->hijoIzq, Dato, Bytes, cmp);
-
-    else if(resCmp < 0)
-        return InsertarEnArbolRecursivo(&(*p)->hijoDer, Dato, Bytes, cmp);
-
-    return DUPLICADO;
+    return esHoja;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-tArbolBin* BusquedaEnArbolRecursivo(tArbolBin *p, const void* Dato, tCmp cmp)
+///agregar un hijo y guardar la lista de hijos en un puntero al nodo hijo
+int AgregarHijo(tNodoArbolNario *padre, const void *infoHijo, unsigned tam, tNodoArbolNario **pHijo)
 {
-    int resCmp;
+    tNodoArbolNario *nuevoHijo;
 
-    if(!(*p))
-        return NULL;
+    nuevoHijo = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
+    if (!nuevoHijo) return 0;
 
-    resCmp = cmp((*p)->info, Dato);
+    nuevoHijo->info = malloc(tam);
+    if (!nuevoHijo->info)
+    {
+        free(nuevoHijo);
+        return 0;
+    }
 
-    if(resCmp > 0)
-        return BusquedaEnArbolRecursivo(&(*p)->hijoIzq, Dato, cmp);
+    memcpy(nuevoHijo->info, infoHijo, tam);
+    nuevoHijo->hijos = NULL;
 
-    else if(resCmp < 0)
-        return BusquedaEnArbolRecursivo(&(*p)->hijoDer, Dato, cmp);
+    if (PonerAlFinalEnLista(&(padre->hijos), &nuevoHijo, sizeof(tNodoArbolNario*)))
+    {
+        if (pHijo) *pHijo = nuevoHijo;
+        return 1;
+    }
 
-    return p;
-}*/
+    free(nuevoHijo->info);
+    free(nuevoHijo);
+    return 0;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int CantHijos(const tNodoArbolNario *Padre)
+{
+    int Cant = 0;
+    tLista actual;
 
+    actual = Padre ? Padre->hijos : NULL;
+
+    while(actual)
+    {
+        Cant++;
+        actual = actual->sig;
+    }
+
+    return Cant;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// esto es como querer encontrar V[i]
+int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario** destino)
+{
+    tLista listaHijos;
+    int i = 0;
+
+    if (!actual || !actual->hijos)
+        return 0;
+
+    listaHijos = actual->hijos;
+
+    while (listaHijos && i < pos)
+    {
+        listaHijos = listaHijos->sig;
+        i++;
+    }
+
+    if (listaHijos && listaHijos->Info)
+    {
+        /* CORRECCION: Se debe desreferenciar como doble puntero */
+        *destino = *(tNodoArbolNario**)listaHijos->Info;
+        return 1;
+    }
+
+    return 0;
+}

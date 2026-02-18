@@ -2,7 +2,7 @@
 1770570921 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.c
 	"Configuracion.h"
 
-1770570921 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.h
+1771367360 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -16,41 +16,51 @@
 	<string.h>
 	"Lista.h"
 
-1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
+1771350256 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.c
 	"Lista.h"
 
-1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.h
+1771350256 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\lista.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\main.c
+1771352406 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\main.c
 	"Volcan.h"
+	"../Primitivas/Arbol_Binario.h"
 
-1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
+1771294020 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
 	"Usuario.h"
+	"../Servidor/Servidor.h"
 
-1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
+1771293094 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
 	<stdio.h>
 	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<conio.h>
+	<winsock2.h>
+	<windows.h>
 	<math.h>
 	"../Config/Configuracion.h"
-	"../Primitivas/Arbol.h"
+	"../Primitivas/Arbol_Binario.h"
+	"../Primitivas/Arbol_N_ario.h"
 	"../Primitivas/Lista.h"
 	"../Primitivas/Cola.h"
 
-1770570921 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.c
+1771352326 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.c
 	"Volcan.h"
 
-1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.h
+1771374788 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.h
 	<stdio.h>
 	<stdlib.h>
 	"Usuario.h"
+	"../Primitivas/Arbol_N_ario.h"
+	"Criatura.h"
 
-1770843201 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.c
+1770847120 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.c
 	"Cola.h"
 
-1770843201 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.h
+1770847541 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\cola.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -142,4 +152,44 @@
 	"../Primitivas/Lista.h"
 	"../Primitivas/Cola.h"
 	"../Primitivas/Arbol_Binario.h"
+
+1771290236 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_binario.c
+	"Arbol_Binario.h"
+
+1770848851 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_binario.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1771352326 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.c
+	"Arbol_N_ario.h"
+
+1771366831 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Lista.h"
+	"Cola.h"
+
+1771293094 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\servidor.h
+	<stdio.h>
+	<stdlib.h>
+	<winsock2.h>
+	"../Primitivas/Cola.h"
+	"../Primitivas/Arbol_Binario.h"
+	"../Juego_Volcan/Usuario.h"
+
+1771349967 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\criatura.c
+	"Criatura.h"
+
+1771372557 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\criatura.h
+	"../Primitivas/Arbol_N_ario.h"
+	"../Primitivas/Cola.h"
+	"Volcan.h"
+
+1771352662 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\juego.c
+	"Juego.h"
+
+1771352592 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\juego.h
+	"Volcan.h"
 

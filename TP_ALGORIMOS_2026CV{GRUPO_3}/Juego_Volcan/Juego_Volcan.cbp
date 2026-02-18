@@ -51,6 +51,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../Primitivas/Lista.h" />
+		<Unit filename="Criatura.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Criatura.h" />
+		<Unit filename="Juego.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Juego.h" />
 		<Unit filename="Usuario.c">
 			<Option compilerVar="CC" />
 		</Unit>
