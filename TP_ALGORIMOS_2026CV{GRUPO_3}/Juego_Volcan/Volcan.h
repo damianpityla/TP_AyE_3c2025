@@ -3,9 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Usuario.h"
+#include <time.h>
 #include "../Primitivas/Arbol_N_ario.h"
-#include "Criatura.h"
 
 #define ARCH_VOLCAN "volcan.txt"
 
@@ -17,6 +16,8 @@
 #define VACIO    '0'
 #define LAVA     'L'
 
+struct sConfig;
+typedef struct sConfig tConfig;
 
 typedef struct{
     int turno;
@@ -38,14 +39,13 @@ typedef struct {
 } tInfoCamara;
 
 
-typedef struct sEstado
-{
-    tArbolNario Volcan;
-    tNodoArbolNario *PosJugador;
+typedef struct sEstado {
+    tNodoArbolNario* Volcan;
+    tNodoArbolNario* PosJugador;
+    tLista MapaPadres;
     int Vidas;
     int Puntaje;
     int TurnosJugados;
-    tLista MapaPadres;
 } tEstado;
 
 typedef struct
@@ -56,12 +56,12 @@ typedef struct
 tParPadre;
 
 int GenerarEstructuraVolcan(tEstado* estado, tConfig* config);
-void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, struct sConfig* config, int* proximoId);
+void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* config, int* proximoId);
 void CensoDeCamaras(tNodoArbolNario* raiz, tLista* listaPunteros);
 tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros);
 tNodoArbolNario* SortearCamaraCualquiera(tLista* listaPunteros);
-void DibujarCamaraEnArchivo(FILE* pf, tNodoArbolNario* nodo, const struct sEstado* estado, int nivel, int* prefijo, int esUltimo);
-void GrabarArchivoVolcan(tNodoArbolNario* raiz, const struct sEstado* estado, const char* nombreArchivo);
+void DibujarCamaraEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int* prefijo, int esUltimo);
+void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char* nombreArchivo);
 void ActualizarMapaPadres(tNodoArbolNario* raiz, tLista* mapaPadres);
 int ObtenerProfundidadCamara(const tLista* mapaPadres, tNodoArbolNario* nodo);
 int BuscarPadre(const tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre);
@@ -72,6 +72,7 @@ int Profundidad(const tLista *MapaPadres, tNodoArbolNario *Nodo);
 int AgregarHijo(tNodoArbolNario *Padre, const void *InfoHijo, unsigned TamInfo, tNodoArbolNario **pHijo);
 int CondEsHijo(const void *Elem, const void *Contexto);
 void AvanzarLava(tNodoArbolNario* nodo, int nivelLava, const tLista* mapaPadres);
+void PoblarCamaras(tEstado* estado, struct sConfig* config);
 
 
 #endif // VOLCAN_H_INCLUDED

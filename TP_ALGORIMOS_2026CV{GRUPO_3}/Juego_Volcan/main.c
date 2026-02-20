@@ -1,4 +1,5 @@
 #include "Volcan.h"
+#include "Usuario.h"
 #include "../Primitivas/Arbol_Binario.h"
 int main()
 {
@@ -8,6 +9,7 @@ int main()
 
     CrearArbolBin(&indice);
     CrearLista(&ranking);
+    srand(time(NULL));
 
     if(!Menu())
     {

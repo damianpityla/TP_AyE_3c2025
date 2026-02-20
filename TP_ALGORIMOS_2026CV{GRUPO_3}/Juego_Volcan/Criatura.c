@@ -1,20 +1,21 @@
 #include "Criatura.h"
 //////////////////////////////////////////////////////////////////////////////
-tNodoArbolNario* DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, struct sEstado* estado)
+tNodoArbolNario* DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstado* estado)
 {
     tNodoArbolNario* padre = NULL;
     tLista hijos;
 
     if (actual == estado->PosJugador) return NULL;
 
-    if (EsAncestroPorId(actual, estado->PosJugador))
+    if (EsAncestroPorId(actual, ((tInfoCamara*)estado->PosJugador->info)->id))
     {
         hijos = actual->hijos;
         while (hijos)
         {
             tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-            if (h == estado->PosJugador || EsAncestroPorId(h, estado->PosJugador))
+            if (EsAncestroPorId(actual, ((tInfoCamara*)estado->PosJugador->info)->id))
                 return h;
+
             hijos = hijos->sig;
         }
     }
@@ -99,7 +100,7 @@ void RecorrerDFSpreorden(const tNodoArbolNario *Nodo, tAccionNodo Accion, void *
     }
 }
 //////////////////////////////////////////////////////////////////////////////
-void MoverCriaturas(tNodoArbolNario* raiz, struct sEstado* estado)
+void MoverCriaturas(tNodoArbolNario* raiz, tEstado *estado)
 {
     tInfoCamara* info;
     tNodoArbolNario* destino;

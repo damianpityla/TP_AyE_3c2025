@@ -1,5 +1,6 @@
 #include "Juego.h"
-void EjecutarCicloJuego(tEstado* estado, struct sConfig* config)
+#include "Criatura.h"
+void EjecutarCicloJuego(tEstado* estado, struct sConfig* config, const char *ArchConfiguraciones)
 {
     int jugando = 1;
     char tecla;
@@ -8,8 +9,9 @@ void EjecutarCicloJuego(tEstado* estado, struct sConfig* config)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     CrearCola(&colaMovs);
+    CrearArchivoConfiguracion(ArchConfiguraciones);
 
-    while (jugando && estado->Vidas > 0)
+    while(jugando && estado->Vidas > 0)
     {
         DibujarInterfaz(estado);
 

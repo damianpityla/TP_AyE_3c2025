@@ -27,7 +27,8 @@ int CrearNodoArbolNario(tNodoArbolNario **pNodo, const void *info, unsigned tam)
     if (!(*pNodo)) return 0;
 
     (*pNodo)->info = malloc(tam);
-    if (!((*pNodo)->info)) {
+    if (!((*pNodo)->info))
+    {
         free(*pNodo);
         return 0;
     }
@@ -119,7 +120,6 @@ int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario** destino)
 
     if (listaHijos && listaHijos->Info)
     {
-        /* CORRECCION: Se debe desreferenciar como doble puntero */
         *destino = *(tNodoArbolNario**)listaHijos->Info;
         return 1;
     }

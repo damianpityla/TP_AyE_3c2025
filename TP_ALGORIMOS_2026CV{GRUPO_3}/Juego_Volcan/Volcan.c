@@ -1,4 +1,5 @@
 #include "Volcan.h"
+#include "../Config/Configuracion.h"
 int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
 {
     tInfoCamara infoRaiz;
@@ -57,28 +58,29 @@ tNodoArbolNario* CrearNodoCamara(int* proximoId)
     return nuevoNodo;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, struct sConfig* config, int* proximoId)
+void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* config, int* proximoId)
 {
     int i;
     int cantidadHijos;
     tInfoCamara nuevaInfo;
     tNodoArbolNario* nodoHijoCreado;
 
-    if (nivelActual >= (*(config)).altura_maxima) return;
+    if (nivelActual >= config->altura_maxima) return;
 
-    cantidadHijos = rand() % ((*(config)).max_conexiones + 1);
+    cantidadHijos = rand() % (config->max_conexiones + 1);
 
     for (i = 0; i < cantidadHijos; i++)
     {
         nuevaInfo.id = *proximoId;
-        *proximoId = *proximoId + 1;
+        (*proximoId)++; // Incremento más limpio
+
         nuevaInfo.hay_lava = 0;
         nuevaInfo.es_salida = 0;
         nuevaInfo.hay_premio = (rand() % 100 < 15);
         nuevaInfo.hay_vida = (rand() % 100 < 5);
         nuevaInfo.cant_criaturas = 0;
 
-        if (AgregarHijo(padre, &nuevaInfo, sizeof(tInfoCamara), &nodoHijoCreado))
+        if(AgregarHijo(padre, &nuevaInfo, sizeof(tInfoCamara), &nodoHijoCreado))
         {
             CrearRamasAleatorias(nodoHijoCreado, nivelActual + 1, config, proximoId);
         }
@@ -216,7 +218,7 @@ tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros)
 
     return res;
 }
-void GrabarArchivoVolcan(tNodoArbolNario* raiz, const struct sEstado* estado, const char* nombreArchivo)
+void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char* nombreArchivo)
 {
     FILE* pf = fopen(nombreArchivo, "wt");
     int* prefijoVetor = (int*)calloc(100, sizeof(int));
@@ -229,7 +231,7 @@ void GrabarArchivoVolcan(tNodoArbolNario* raiz, const struct sEstado* estado, co
     fclose(pf);
 }
 
-void DibujarCamaraEnArchivo(FILE* pf, tNodoArbolNario* nodo, const struct sEstado* estado, int nivel, int* prefijo, int esUltimo)
+void DibujarCamaraEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int* prefijo, int esUltimo)
 {
     tInfoCamara* info;
     tLista hijos;

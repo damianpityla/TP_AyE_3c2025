@@ -46,36 +46,47 @@ void procesar_peticiones_pendientes(tCola* pCola, SOCKET client_sock, tArbolBin 
 
     while(SacarDeCola(pCola, peticion, sizeof(peticion)) == TODO_OK)
     {
-        // 1. Caso LOGIN
         if (strncmp(peticion, "LOGIN", 5) == 0)
         {
             char nombre[50];
             sscanf(peticion + 6, "%s", nombre);
-
             tIndiceJugador clave;
             strcpy(clave.nombre, nombre);
             nodo = BusquedaEnArbolBin(pIndice, &clave, cmpIndicePorNombre);
-
             if (nodo)
             {
                 sprintf(respuesta, "OK %d", ((tIndiceJugador*)(*nodo)->Info)->id);
             }
             else
             {
+                sprintf(respuesta, "ERROR_USER_NOT_FOUND");
+            }
+            send(client_sock, respuesta, strlen(respuesta), 0);
+        }
+        else if (strncmp(peticion, "REGISTER", 8) == 0)
+        {
+            char nombre[50];
+            sscanf(peticion + 9, "%s", nombre);
+            tIndiceJugador clave;
+            strcpy(clave.nombre, nombre);
+            nodo = BusquedaEnArbolBin(pIndice, &clave, cmpIndicePorNombre);
+            if (nodo)
+            {
+                sprintf(respuesta, "ERROR_ALREADY_EXISTS");
+            }
+            else
+            {
                 if (altaJugadorServidor(ARCH_JUGADORES, pIndice, nombre, cmpIndicePorNombre) == TODO_OK)
                 {
-                    nodo = BusquedaEnArbolBin(pIndice, &clave, cmpIndicePorNombre);
-                    sprintf(respuesta, "OK %d", ((tIndiceJugador*)(*nodo)->Info)->id);
+                    sprintf(respuesta, "REGISTER_OK");
                 }
                 else
                 {
-                    sprintf(respuesta, "ERROR_ALTA");
+                    sprintf(respuesta, "ERROR_DB");
                 }
             }
             send(client_sock, respuesta, strlen(respuesta), 0);
-        } // <--- Faltaba cerrar esta llave del bloque LOGIN
-
-        // 2. Caso PARTIDA
+        }
         else if (strncmp(peticion, "PARTIDA", 7) == 0)
         {
             int id, movs;
@@ -86,9 +97,26 @@ void procesar_peticiones_pendientes(tCola* pCola, SOCKET client_sock, tArbolBin 
                 send(client_sock, "PARTIDA GUARDADA", 16, 0);
             }
         }
+        else if (strncmp(peticion, "RANKING", 7) == 0)
+        {
+            tLista ranking;
+            tRanking reg;
+            if (GenerarRanking(ARCH_PARTIDAS, pIndice, &ranking) == TODO_OK)
+            {
+                tLista actual = ranking;
+                while(actual)
+                {
+                    memcpy(&reg, actual->Info, sizeof(tRanking));
+                    send(client_sock, (char*)&reg, sizeof(tRanking), 0);
+                    actual = actual->sig;
+                }
+            }
+            reg.idJugador = -1;
+            send(client_sock, (char*)&reg, sizeof(tRanking), 0);
+            VaciarLista(&ranking);
+        }
     }
 }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ejecutar_servidor(int puerto, tArbolBin* pIndice)
 {
@@ -132,4 +160,46 @@ void ejecutar_servidor(int puerto, tArbolBin* pIndice)
             closesocket(nuevo_socket);
         }
     }
+}
+int cmpIndicePorNombre(const void *a, const void *b) {
+    const tIndiceJugador *ia = (const tIndiceJugador*)a;
+    const tIndiceJugador *ib = (const tIndiceJugador*)b;
+    return strcmp(ia->nombre, ib->nombre);
+}
+
+int altaJugadorServidor(const char* arch, tArbolBin* pIndice, const char* nombre, tCmp cmp) {
+    FILE* pf = fopen(arch, "ab+"); // ab+ para lectura/escritura al final
+    if (!pf) return ERROR_ARCHIVO;
+
+    tJugador nuevo;
+    fseek(pf, 0, SEEK_END);
+    nuevo.id = (ftell(pf) / sizeof(tJugador)) + 1;
+    strncpy(nuevo.nombre, nombre, TAM_NOMBRE);
+    nuevo.nombre[TAM_NOMBRE] = '\0';
+
+    fwrite(&nuevo, sizeof(tJugador), 1, pf);
+
+    tIndiceJugador ind;
+    ind.id = nuevo.id;
+    ind.desplazamiento = nuevo.id - 1;
+    strcpy(ind.nombre, nuevo.nombre);
+
+    InsertarEnArbolBin(pIndice, &ind, sizeof(tIndiceJugador), cmp);
+
+    fclose(pf);
+    return TODO_OK;
+}
+
+int registrarPartidaEnServidor(const char* arch, int id, float pts, int movs) {
+    FILE* pf = fopen(arch, "ab");
+    if (!pf) return ERROR_ARCHIVO;
+
+    tPartida p;
+    p.idjugador = id;
+    p.Puntuacion = pts;
+    p.CantMovimientos = movs;
+
+    fwrite(&p, sizeof(tPartida), 1, pf);
+    fclose(pf);
+    return TODO_OK;
 }

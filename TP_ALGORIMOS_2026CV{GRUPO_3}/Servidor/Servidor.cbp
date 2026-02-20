@@ -35,6 +35,17 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../Config/Configuracion.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Config/Configuracion.h" />
+		<Unit filename="../Juego_Volcan/Criatura.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Juego_Volcan/Criatura.h" />
+		<Unit filename="../Juego_Volcan/Juego.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../Juego_Volcan/Usuario.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -47,6 +58,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../Primitivas/Arbol_Binario.h" />
+		<Unit filename="../Primitivas/Arbol_N_ario.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../Primitivas/Arbol_N_ario.h" />
 		<Unit filename="../Primitivas/Cola.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -29,4 +29,5 @@ void VaciarArbolBin(tArbolBin* p);
 int InsertarEnArbolBin(tArbolBin* p, const void *Dato, unsigned Bytes, tCmp cmp);
 tArbolBin* BusquedaEnArbolBin(tArbolBin* p, const void *Dato, tCmp cmp);
 
+
 #endif // ARBOLBINARIO_H_INCLUDED

@@ -7,17 +7,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
 #include <conio.h>
-#include <winsock2.h>
+#include <ctype.h>
 #include <windows.h>
 #include <math.h>
 
 
 #define OPC_OFFLINE 2
 
-
+#include "../Config/Configuracion.h"
+#include "Volcan.h"
+#include "Usuario.h"
+#include "Juego.h"
+#include "../Servidor/Servidor.h"
 #include "../Config/Configuracion.h"
 #include "../Primitivas/Arbol_Binario.h"
 #include "../Primitivas/Arbol_N_ario.h"
