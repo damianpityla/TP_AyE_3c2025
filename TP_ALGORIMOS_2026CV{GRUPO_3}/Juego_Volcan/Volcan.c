@@ -220,79 +220,78 @@ tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros)
 }
 void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char* nombreArchivo)
 {
-    FILE* pf = fopen(nombreArchivo, "wt");
-    int* prefijoVetor = (int*)calloc(100, sizeof(int));
+    FILE* pf;
 
-    if (!pf || !prefijoVetor) return;
+    pf = fopen(nombreArchivo, "w");
+    if (!pf) return;
 
-    DibujarCamaraEnArchivo(pf, raiz, estado, 0, prefijoVetor, 1);
+    DibujarArbolEnArchivo(pf, raiz, estado, 0, 70);
 
-    free(prefijoVetor);
     fclose(pf);
 }
 
-void DibujarCamaraEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int* prefijo, int esUltimo)
+void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int xCentro)
 {
     tInfoCamara* info;
     tLista hijos;
+    tLista aux;
     int i;
+    int k;
+    int cantidadHijos;
+    int nuevaX;
+    int anchoAbanico;
+    int separacionH;
 
-    if (!pf || !nodo) return;
+    if (!nodo || !pf) return;
+
     info = (tInfoCamara*)nodo->info;
+    separacionH = (nivel == 0) ? 36 : (nivel == 1) ? 18 : 8;
 
-    if (nivel > 0)
-    {
-        for (i = 0; i < nivel - 1; i++)
-        {
-            if (*(prefijo + i)) fprintf(pf, "│       ");
-            else fprintf(pf, "        ");
-        }
-        fprintf(pf, "│\n");
-    }
+    for (i = 0; i < xCentro; i++) fprintf(pf, " ");
 
-    for (i = 0; i < nivel - 1; i++)
-    {
-        if (*(prefijo + i)) fprintf(pf, "│       ");
-        else fprintf(pf, "        ");
-    }
+    if (nivel == 0) fprintf(pf, "S");
+    else fprintf(pf, "O");
 
-    if (nivel > 0)
-    {
-        if (esUltimo)
-        {
-            fprintf(pf, "└──(O)── ");
-            *(prefijo + (nivel - 1)) = 0;
-        }
-        else
-        {
-            fprintf(pf, "├──(O)── ");
-            *(prefijo + (nivel - 1)) = 1;
-        }
-    }
-    else fprintf(pf, "( S ) CRATER");
+    if (nodo == estado->PosJugador) fprintf(pf, "[J]");
 
-    if (nivel > 0)
+    if (info->cant_criaturas > 0 || info->hay_premio || info->hay_lava || info->hay_vida)
     {
-        if (nodo == (*(estado)).PosJugador || info->cant_criaturas > 0 || info->hay_premio || info->hay_lava)
-        {
-            fprintf(pf, "<");
-            if (nodo == (*(estado)).PosJugador) fprintf(pf, "J");
-            if (info->cant_criaturas > 0) fprintf(pf, "C");
-            if (info->hay_premio) fprintf(pf, "P");
-            if (info->hay_lava) fprintf(pf, "L");
-            fprintf(pf, ">");
-        }
+        fprintf(pf, "[");
+        if (info->cant_criaturas > 0) fprintf(pf, "C");
+        if (info->hay_premio) fprintf(pf, "P");
+        if (info->hay_vida) fprintf(pf, "V");
+        if (info->hay_lava) fprintf(pf, "L");
+        fprintf(pf, "]");
     }
     fprintf(pf, "\n");
 
     hijos = nodo->hijos;
-    while (hijos)
+    if (hijos)
     {
-        tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-        int ultimo = (hijos->sig == NULL);
-        *(prefijo + nivel) = !ultimo;
-        DibujarCamaraEnArchivo(pf, h, estado, nivel + 1, prefijo, ultimo);
-        hijos = hijos->sig;
+        cantidadHijos = 0;
+        aux = hijos;
+        while (aux)
+        {
+            cantidadHijos++;
+            aux = aux->sig;
+        }
+
+        for (i = 0; i < xCentro; i++) fprintf(pf, " ");
+
+        if (cantidadHijos == 1) fprintf(pf, "|\n");
+        else if (cantidadHijos == 2) fprintf(pf, "/ \\\n");
+        else fprintf(pf, "/|\\\n");
+
+        anchoAbanico = (cantidadHijos - 1) * separacionH;
+        nuevaX = xCentro - (anchoAbanico / 2);
+
+        while (hijos)
+        {
+            tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
+            DibujarArbolEnArchivo(pf, h, estado, nivel + 1, nuevaX);
+            nuevaX += separacionH;
+            hijos = hijos->sig;
+        }
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,23 +365,7 @@ int Profundidad(const tLista *MapaPadres, tNodoArbolNario *Nodo)
 
     return profundidad;
 }
-void AvanzarLava(tNodoArbolNario* nodo, int nivelLava, const tLista* mapaPadres)
-{
-    tInfoCamara* info = (tInfoCamara*)nodo->info;
-    tLista hijos;
 
-    if (Profundidad(mapaPadres, nodo) >= nivelLava)
-    {
-        info->hay_lava = 1;
-    }
-
-    hijos = nodo->hijos;
-    while(hijos)
-    {
-        AvanzarLava(*(tNodoArbolNario**)hijos->Info, nivelLava, mapaPadres);
-        hijos = hijos->sig;
-    }
-}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int CondEsHijo(const void *Elem, const void *Contexto)
 {

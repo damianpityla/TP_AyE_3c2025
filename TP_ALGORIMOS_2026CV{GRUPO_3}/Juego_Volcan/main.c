@@ -1,40 +1,72 @@
 #include "Volcan.h"
 #include "Usuario.h"
-#include "../Primitivas/Arbol_Binario.h"
+#include "Juego.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 int main()
 {
     tArbolBin indice;
     tLista ranking;
-    int estado;
+    tConfig config;
+    tEstado estado;
+    int res;
+    int modoOnline;
 
     CrearArbolBin(&indice);
     CrearLista(&ranking);
     srand(time(NULL));
+    modoOnline = 0;
 
     if(!Menu())
     {
-        printf("\nHUBO UN ERROR CON EL MENU");
+        VaciarLista(&ranking);
+        VaciarArbolBin(&indice);
+        return 0;
     }
 
-    estado = CargarIndiceJugadores(ARCH_JUGADORES, &indice); ///todavia no hay
-    if(estado != TODO_OK)
+    res = CargarIndiceJugadores(ARCH_JUGADORES, &indice);
+    if(res == TODO_OK)
     {
-        puts("Error al cargar el archivo de indices.");
+        modoOnline = 1;
+    }
+    else
+    {
+        puts("Iniciando en modo OFFLINE (No se guardaran puntuaciones).");
+    }
+
+    if(!CargarConfiguracion(&config, "config.txt"))
+    {
+        puts("Error critico: No se encontro config.txt");
         VaciarLista(&ranking);
         VaciarArbolBin(&indice);
         return 1;
     }
 
-    estado = GenerarRanking(ARCH_PARTIDAS, &indice, &ranking);
-    if(estado != TODO_OK)
+    if(!GenerarEstructuraVolcan(&estado, &config))
     {
-        puts("Error al generar el ranking.");
+        puts("Error al generar el volcan.");
         VaciarLista(&ranking);
         VaciarArbolBin(&indice);
         return 1;
     }
-    puts("\n===== RANKING DE JUGADORES =====");
-    RecorrerLista(&ranking, MostrarRanking);
+
+    PoblarCamaras(&estado, &config);
+
+    GrabarArchivoVolcan(estado.Volcan, &estado, "volcan.txt");
+
+    EjecutarCicloJuego(&estado, &config, "config.txt");
+
+    if(modoOnline)
+    {
+        res = GenerarRanking(ARCH_PARTIDAS, &indice, &ranking);
+        if(res == TODO_OK)
+        {
+            puts("\n===== RANKING DE JUGADORES =====");
+            RecorrerLista(&ranking, MostrarRanking);
+        }
+    }
 
     VaciarLista(&ranking);
     VaciarArbolBin(&indice);

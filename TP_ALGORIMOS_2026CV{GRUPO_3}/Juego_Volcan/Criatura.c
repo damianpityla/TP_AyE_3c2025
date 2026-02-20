@@ -2,20 +2,18 @@
 //////////////////////////////////////////////////////////////////////////////
 tNodoArbolNario* DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstado* estado)
 {
-    tNodoArbolNario* padre = NULL;
+    tNodoArbolNario* padre;
     tLista hijos;
 
     if (actual == estado->PosJugador) return NULL;
 
-    if (EsAncestroPorId(actual, ((tInfoCamara*)estado->PosJugador->info)->id))
+    if (EsAncestro(actual, estado->PosJugador))
     {
         hijos = actual->hijos;
         while (hijos)
         {
             tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-            if (EsAncestroPorId(actual, ((tInfoCamara*)estado->PosJugador->info)->id))
-                return h;
-
+            if (EsAncestro(h, estado->PosJugador)) return h;
             hijos = hijos->sig;
         }
     }
@@ -26,6 +24,40 @@ tNodoArbolNario* DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstad
     }
 
     return NULL;
+}
+int EsAncestro(tNodoArbolNario* potencialAncestro, tNodoArbolNario* objetivo)
+{
+    tLista hijos;
+
+    if (!potencialAncestro || !objetivo) return 0;
+    if (potencialAncestro == objetivo) return 1;
+
+    hijos = potencialAncestro->hijos;
+    while (hijos)
+    {
+        /* Casteo de Info a puntero de nodo para la recursion */
+        if (EsAncestro(*(tNodoArbolNario**)hijos->Info, objetivo)) return 1;
+        hijos = hijos->sig;
+    }
+    return 0;
+}
+void VerificarCombate(tEstado* estado)
+{
+    tInfoCamara* info;
+    info = (tInfoCamara*)estado->PosJugador->info;
+
+    if (info->cant_criaturas > 0)
+    {
+        info->cant_criaturas = 0;
+        estado->Vidas--;
+
+        if (estado->Vidas > 0)
+        {
+            printf("\n¡FUISTE ALCANZADO POR UNA CRIATURA! Pierdes una vida.\n");
+            printf("Reapareces en la misma camara...\n");
+            system("pause");
+        }
+    }
 }
 int EsAncestroPorId(tNodoArbolNario* potencialAncestro, int idObjetivo)
 {

@@ -60,18 +60,18 @@ void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* conf
 void CensoDeCamaras(tNodoArbolNario* raiz, tLista* listaPunteros);
 tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros);
 tNodoArbolNario* SortearCamaraCualquiera(tLista* listaPunteros);
-void DibujarCamaraEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int* prefijo, int esUltimo);
+void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int xCentro);
 void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char* nombreArchivo);
 void ActualizarMapaPadres(tNodoArbolNario* raiz, tLista* mapaPadres);
 int ObtenerProfundidadCamara(const tLista* mapaPadres, tNodoArbolNario* nodo);
 int BuscarPadre(const tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre);
 
-// Estas vienen de otros archivos, asegurate de incluir sus .h o declararlas:
+// Estas vienen de otros archivos
 void ConstruirMapaPadres(tNodoArbolNario *Raiz, tLista *pMapaPadres);
 int Profundidad(const tLista *MapaPadres, tNodoArbolNario *Nodo);
 int AgregarHijo(tNodoArbolNario *Padre, const void *InfoHijo, unsigned TamInfo, tNodoArbolNario **pHijo);
 int CondEsHijo(const void *Elem, const void *Contexto);
-void AvanzarLava(tNodoArbolNario* nodo, int nivelLava, const tLista* mapaPadres);
+void AvanzarLava(tNodoArbolNario* nodo, int nivelObjetivo, int nivelActual);
 void PoblarCamaras(tEstado* estado, struct sConfig* config);
 
 
