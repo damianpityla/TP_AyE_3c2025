@@ -92,10 +92,12 @@ void procesar_peticiones_pendientes(tCola* pCola, SOCKET client_sock, tArbolBin 
         {
             int id, movs;
             float pts;
-            sscanf(peticion + 8, "%d %f %d", &id, &pts, &movs);
-            if (registrarPartidaEnServidor(ARCH_PARTIDAS, id, pts, movs) == TODO_OK)
+            if (sscanf(peticion + 8, "%d %f %d", &id, &pts, &movs) == 3)
             {
-                send(client_sock, "PARTIDA GUARDADA", 16, 0);
+                if (registrarPartidaEnServidor(ARCH_PARTIDAS, id, pts, movs) == TODO_OK)
+                {
+                    send(client_sock, "PARTIDA GUARDADA", 16, 0);
+                }
             }
         }
         else if (strncmp(peticion, "RANKING", 7) == 0)
@@ -171,7 +173,6 @@ int GenerarRanking(const char* archPartidas, tArbolBin* pIndice, tLista* pRankin
     tRanking reg;
     tNodoArbolBin** nodo;
     tNodoLista* listaTemporal;
-    tNodoLista* elim;
 
     pf = fopen(archPartidas, "rb");
     if(!pf)
@@ -202,15 +203,12 @@ int GenerarRanking(const char* archPartidas, tArbolBin* pIndice, tLista* pRankin
         memcpy(&reg, listaTemporal->Info, sizeof(tRanking));
         InsertarEnOrdenLista(pRanking, &reg, sizeof(tRanking), CON_DUPLICADOS, cmpRankingPorPuntosDesc, NULL);
 
-        elim = listaTemporal;
-        listaTemporal = listaTemporal->sig;
-        free(elim->Info);
-        free(elim);
+        sacarPrimeroLista(&listaTemporal, &reg, sizeof(tRanking));
     }
 
     return TODO_OK;
 }
-int altaJugadorServidor(const char* archIndice, tArbolBin* pIndice, const char* nombre, tCmp cmp)
+int altaJugadorServidor(const char *archIndice, tArbolBin *pIndice, const char *nombre, tCmp cmp)
 {
     FILE* pf;
     tJugador nuevo;
@@ -264,11 +262,13 @@ void EscribirABBEnArchivo(tNodoArbolBin* raiz, FILE* arch)
 }
 tNodoArbolBin** BuscarPorIdEnArbol(tArbolBin* p, int id)
 {
-    tNodoArbolBin** izq;
+    tNodoArbolBin **izq;
+    int idActual;
     if(!*p)
         return NULL;
 
-    if(((tIndiceJugador*)(*p)->Info)->id == id)
+    idActual = ((tIndiceJugador*)(*p)->Info)->id;
+    if(idActual == id)
         return p;
 
     izq = BuscarPorIdEnArbol(&(*p)->Izq, id);
@@ -277,7 +277,7 @@ tNodoArbolBin** BuscarPorIdEnArbol(tArbolBin* p, int id)
 
     return BuscarPorIdEnArbol(&(*p)->Der, id);
 }
-void GuardarIndiceBinario(tArbolBin raiz, const char* nombreArchivo)
+void GuardarIndiceBinario(tArbolBin raiz, const char *nombreArchivo)
 {
     FILE* arch;
 
@@ -290,7 +290,7 @@ void GuardarIndiceBinario(tArbolBin raiz, const char* nombreArchivo)
     EscribirABBEnArchivo(raiz, arch);
     fclose(arch);
 }
-void CargarIndiceBinario(tArbolBin* pIndice, const char* nombreArchivo)
+void CargarIndiceBinario(tArbolBin* pIndice, const char *nombreArchivo)
 {
     FILE* arch = fopen(nombreArchivo, "rb");
     if(!arch)

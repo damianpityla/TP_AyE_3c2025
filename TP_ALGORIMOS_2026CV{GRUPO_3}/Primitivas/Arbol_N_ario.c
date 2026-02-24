@@ -12,7 +12,7 @@ void VaciarArbolNario(tArbolNario *p)
 
     tNodoArbolNario* hijo;
 
-    while(sacarPrimeroLista(&(*p)->hijos, &hijo, sizeof(tNodoArbolNario *)))
+    while(sacarPrimeroLista(&(*p)->hijos, &hijo, sizeof(tNodoArbolNario *)) == TODO_OK)
     {
         VaciarArbolNario(&hijo);
     }
@@ -125,4 +125,19 @@ int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario** destino)
     }
 
     return 0;
+}
+tNodoArbolNario* ObtenerPrimeraHoja(tNodoArbolNario *p)
+{
+    if(!p)
+        return NULL;
+
+    tNodoArbolNario *aux = p;
+    tNodoArbolNario *primerHijo;
+
+    while(verPrimeroLista(&(aux->hijos), &primerHijo, sizeof(tNodoArbolNario*)) == TODO_OK)
+    {
+        aux = primerHijo;
+    }
+
+    return aux;
 }

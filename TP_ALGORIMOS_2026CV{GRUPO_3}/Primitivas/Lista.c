@@ -17,16 +17,20 @@ void VaciarLista(tLista* p)
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int sacarPrimeroLista(tLista* pl, void* pd, unsigned tam)
+int sacarPrimeroLista(tLista *p, void *Dato, unsigned Bytes)
 {
-    tNodoLista* aux = *pl;
-    if(aux == NULL)
-        return 0;
-    *pl = aux->sig;
-    memcpy(pd, aux->Info, MINIMO(tam,aux->TamInfo));
-    free(aux->Info);
-    free(aux);
-    return 1;
+    tNodoLista *elim = *p;
+    if(!elim)
+        return VACIA;
+
+    *p = elim->sig;
+
+    memcpy(Dato, elim->Info, MINIMO(Bytes, elim->TamInfo));
+
+    free(elim->Info);
+    free(elim);
+
+    return TODO_OK;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void RecorrerLista(const tLista* p, tAccion Accion)
@@ -161,7 +165,7 @@ int PonerAlFinalEnLista(tLista *p, const void *Dato, unsigned Bytes)
 }
 ///esta es como strchr
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int BuscarPrimeroCondicionLista(const tLista* p, void* Dato, unsigned Bytes, tCondicion Condicion, const void *Contexto)
+int BuscarPrimeroCondicionLista(tLista* p, void* Dato, unsigned Bytes, tCondicion Condicion, const void *Contexto)
 {
     while(*p)
     {
@@ -173,4 +177,14 @@ int BuscarPrimeroCondicionLista(const tLista* p, void* Dato, unsigned Bytes, tCo
         p = &(*p)->sig;
     }
     return 0;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int verPrimeroLista(tLista *p, void *Dato, unsigned Bytes)
+{
+    if(!*p)
+        return VACIA;
+
+    memcpy(Dato, (*p)->Info, MINIMO(Bytes, (*p)->TamInfo));
+
+    return TODO_OK;
 }

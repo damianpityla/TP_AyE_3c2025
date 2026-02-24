@@ -6,7 +6,7 @@
 
 void IniciarMusicaFondo()
 {
-    PlaySound(TEXT("crash.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(TEXT(MUSICA_FONDO), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 }
 void DetenerMusica()
 {
@@ -103,12 +103,12 @@ void ProcesarMovimientoJugador(tEstado* estado, char tecla)
     }
 }
 
-void MostrarMapaJerarquico(tNodoArbolNario* nodo, const tEstado* estado, int nivel, int xCentro, int yRelativo)
+void MostrarMapaJerarquico(tNodoArbolNario* nodo, tEstado* estado, int nivel, int xCentro, int yRelativo)
 {
     tInfoCamara* info;
     tLista hijos;
     tLista aux;
-    int i, k, cantidadHijos, nuevaX, anchoAbanico, separacionH, saltoV;
+    int k, cantidadHijos, nuevaX, anchoAbanico, separacionH, saltoV;
     HANDLE hConsole;
 
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -171,13 +171,11 @@ void MostrarMapaJerarquico(tNodoArbolNario* nodo, const tEstado* estado, int niv
     SetConsoleTextAttribute(hConsole, 7);
 }
 
-void DibujarInterfaz(const tEstado* estado, int nivelLavaActual, int alturaMaxima)
+void DibujarInterfaz(tEstado* estado, int nivelLavaActual, int alturaMaxima)
 {
     tInfoCamara* infoActual = (tInfoCamara*)estado->PosJugador->info;
     tNodoArbolNario* padre = NULL;
-    tLista hijos = estado->PosJugador->hijos;
-    int i = 0, iteradorLava, iteradorVidas;
-    char teclas[] = {'A', 'S', 'D', 'F'};
+    int iteradorLava, iteradorVidas;
     HANDLE manejadorConsola = GetStdHandle(STD_OUTPUT_HANDLE);
 
     if (estado->Vidas == 1)
@@ -219,8 +217,8 @@ void DibujarInterfaz(const tEstado* estado, int nivelLavaActual, int alturaMaxim
     printf("    [O] Ubicacion Actual ID: %d\n", infoActual->id);
     printf("----------------------------------------------------------\n");
 }
-
-void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig)
 {
     char teclaPresionada;
     int juegoActivo;
@@ -229,6 +227,7 @@ void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig
     int nivelLavaActual;
     int idCamaraOrigen;
     int iteradorSacudida;
+    int Abandono = 0;
     tInfoCamara* infoJugador;
     tCola colaTurno;
     tMovimientoLog registroMovimiento;
@@ -236,7 +235,7 @@ void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig
     CrearCola(&colaTurno);
     CrearLista(&(estado->Historial));
 
-    PlaySound(TEXT("crash.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NODEFAULT);
+    PlaySound(TEXT(MUSICA_FONDO), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NODEFAULT);
 
     juegoActivo = 1;
     nivelLavaActual = config->altura_maxima;
@@ -244,21 +243,29 @@ void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig
     while (juegoActivo && estado->Vidas > 0)
     {
         system("cls");
-        DibujarInterfaz(estado, nivelLavaActual, config->altura_maxima);
-        filaBaseMapa = obtenerFilaActual() + 1;
+        ubicarCursor(0,0);
+        printf("===========================================================================\n");
+        printf(" JUGADOR: %-10s | VIDAS: %d | TURNOS: %d | NIVEL LAVA: %d \n",
+                "Jugador", estado->Vidas, estado->TurnosJugados, nivelLavaActual);
+        printf("===========================================================================\n");
+
+        filaBaseMapa = 4;
         MostrarMapaJerarquico(estado->Volcan, estado, 0, 75, filaBaseMapa);
 
         filaFinalInterfaz = filaBaseMapa + (config->altura_maxima * 4) + 4;
         ubicarCursor(0, filaFinalInterfaz);
-        printf("Movimiento (W/A/S/D/F) o Q para salir: ");
+        printf("Movimiento (W: Subir | A/S/D/F: Caminos) o Q para salir: ");
 
         teclaPresionada = tolower(getch());
 
         if (teclaPresionada == 'q')
         {
             juegoActivo = 0;
+            Abandono = 1;
         }
-        else
+        else if (teclaPresionada == 'w' || teclaPresionada == 'a' ||
+                 teclaPresionada == 's' || teclaPresionada == 'd' ||
+                 teclaPresionada == 'f')
         {
             PonerEnCola(&colaTurno, &teclaPresionada, sizeof(char));
 
@@ -270,6 +277,14 @@ void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig
 
                 ProcesarMovimientoJugador(estado, teclaPresionada);
 
+                infoJugador = (tInfoCamara*)estado->PosJugador->info;
+                if (infoJugador->hay_lava)
+                {
+                    estado->Vidas = 0;
+                    juegoActivo = 0;
+                    Beep(200, 400);
+                    break;
+                }
                 registroMovimiento.idOrigen = idCamaraOrigen;
                 registroMovimiento.idDestino = ((tInfoCamara*)estado->PosJugador->info)->id;
                 sprintf(registroMovimiento.descripcion, "Turno %d: Desplazamiento efectuado.", estado->TurnosJugados + 1);
@@ -284,7 +299,7 @@ void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig
                     VerificarCombate(estado);
                 }
 
-                if (estado->TurnosJugados > 0 && estado->TurnosJugados % 4 == 0 && nivelLavaActual >= 0)
+                if (nivelLavaActual >= 0 && (rand() % 100 < 25)) /// aca definimos que la probabilidad de lava sea del 25%
                 {
                     for(iteradorSacudida = 0; iteradorSacudida < 5; iteradorSacudida++)
                     {
@@ -295,33 +310,42 @@ void EjecutarCicloJuego(tEstado* estado, tConfig* config, const char* archConfig
                     }
                     AvanzarLava(estado->Volcan, nivelLavaActual, 0);
                     nivelLavaActual--;
-                    Beep(400, 200);
+                    infoJugador = (tInfoCamara*)estado->PosJugador->info;
+                    if (infoJugador->hay_lava)
+                    {
+                        estado->Vidas = 0;
+                        juegoActivo = 0;
+                        Beep(400, 600);
+                        printf("\n[!] LA LAVA TE ALCANZO. PARTIDA TERMINADA.\n");
+                        Sleep(1500);
+                    }
                 }
             }
-
-            estado->TurnosJugados++;
-            infoJugador = (tInfoCamara*)estado->PosJugador->info;
-
-            if (infoJugador->es_salida && estado->TurnosJugados > 1)
+            if(juegoActivo)
             {
-                PlaySound(NULL, 0, 0);
-                system("cls");
-                printf("\n¡HAS ESCAPADO! Puntos por vidas: %d\n", estado->Vidas * 5);
-                estado->Puntaje += (estado->Vidas * 5);
-                getch();
-                juegoActivo = 0;
+                estado->TurnosJugados++;
+                infoJugador = (tInfoCamara*)estado->PosJugador->info;
+
+                if (infoJugador->es_salida && estado->TurnosJugados > 1)
+                {
+                    PlaySound(NULL, 0, 0);
+                    system("cls");
+                    printf("\n¡HAS ESCAPADO! Puntos por vidas: %d\n", estado->Vidas * 5);
+                    estado->Puntaje += (estado->Vidas * 5);
+                    getch();
+                    juegoActivo = 0;
+                }
             }
         }
     }
     PlaySound(NULL, 0, 0);
-    if (estado->Vidas <= 0)
+    if(!Abandono)
     {
         system("cls");
-        printf("\nGAME OVER - Te has quedado sin vidas.\n");
+        printf("\nGAME OVER - El volcan te ha consumido.\n");
+        MostrarRegistroMovimientos(estado);
         getch();
     }
-
-    MostrarRegistroMovimientos(estado);
 
     VaciarLista(&(estado->Historial));
     VaciarCola(&colaTurno);

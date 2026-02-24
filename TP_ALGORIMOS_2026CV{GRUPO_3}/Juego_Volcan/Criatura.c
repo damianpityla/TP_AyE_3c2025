@@ -1,19 +1,22 @@
 #include "Criatura.h"
 //////////////////////////////////////////////////////////////////////////////
-tNodoArbolNario* DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstado* estado)
+tNodoArbolNario *DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstado* estado)
 {
-    tNodoArbolNario* padre;
+    tNodoArbolNario *padre = NULL;;
+    tNodoArbolNario *h;
     tLista hijos;
 
-    if (actual == estado->PosJugador) return NULL;
+    if (actual == estado->PosJugador)
+        return NULL;
 
     if (EsAncestro(actual, estado->PosJugador))
     {
         hijos = actual->hijos;
         while (hijos)
         {
-            tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-            if (EsAncestro(h, estado->PosJugador)) return h;
+            h = *(tNodoArbolNario**)hijos->Info;
+            if(EsAncestro(h, estado->PosJugador))
+                return h;
             hijos = hijos->sig;
         }
     }
@@ -119,7 +122,8 @@ void RecorrerDFSpreorden(const tNodoArbolNario *Nodo, tAccionNodo Accion, void *
     tLista actual;
     tNodoArbolNario* hijo;
 
-    if(!Nodo || !Accion) return;
+    if(!Nodo || !Accion)
+        return;
 
     Accion((tNodoArbolNario*)Nodo, Contexto);
     actual = Nodo->hijos;
@@ -134,30 +138,53 @@ void RecorrerDFSpreorden(const tNodoArbolNario *Nodo, tAccionNodo Accion, void *
 //////////////////////////////////////////////////////////////////////////////
 void MoverCriaturas(tNodoArbolNario* raiz, tEstado *estado)
 {
-    tInfoCamara* info;
-    tNodoArbolNario* destino;
+    tCola ColaExploracion;
+    tCola ColaCambios;
+    tInfoCamara *infoActual;
+    tNodoArbolNario *destino;
+    tNodoArbolNario *h;
+    tNodoArbolNario *actual;
+    tMovimientoCriatura mov;
     tLista hijos;
 
-    if (!raiz) return;
+    CrearCola(&ColaExploracion);
+    CrearCola(&ColaCambios);
 
-    info = (tInfoCamara*)raiz->info;
+    PonerEnCola(&ColaExploracion, &raiz, sizeof(tNodoArbolNario*));
 
-    if (info->cant_criaturas > 0 && raiz != estado->PosJugador)
+    while(!ColaVacia(&ColaExploracion))
     {
-        destino = DeterminarDireccionHaciaJugador(raiz, estado);
+        SacarDeCola(&ColaExploracion, &actual, sizeof(tNodoArbolNario*));
+        infoActual = (tInfoCamara*)actual->info;
 
-        if (destino)
+        hijos = actual->hijos;
+        while (hijos)
         {
-            tInfoCamara* infoDestino = (tInfoCamara*)destino->info;
-            info->cant_criaturas--;
-            infoDestino->cant_criaturas++;
+            h = *(tNodoArbolNario**)hijos->Info;
+            PonerEnCola(&ColaExploracion, &h, sizeof(tNodoArbolNario*));
+            hijos = hijos->sig;
+        }
+
+        if(infoActual->cant_criaturas > 0 && actual != estado->PosJugador)
+        {
+            destino = DeterminarDireccionHaciaJugador(actual, estado);
+            if (destino && destino != actual)
+            {
+                mov.origen = infoActual;
+                mov.destino = (tInfoCamara*)destino->info;
+                mov.cantidad = infoActual->cant_criaturas;
+
+                PonerEnCola(&ColaCambios, &mov, sizeof(tMovimientoCriatura));
+            }
         }
     }
-    hijos = raiz->hijos;
-    while (hijos)
+    while(!ColaVacia(&ColaCambios))
     {
-        tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-        MoverCriaturas(h, estado);
-        hijos = hijos->sig;
+        SacarDeCola(&ColaCambios, &mov, sizeof(tMovimientoCriatura));
+        mov.origen->cant_criaturas -= mov.cantidad;
+        mov.destino->cant_criaturas += mov.cantidad;
     }
+
+    VaciarCola(&ColaExploracion);
+    VaciarCola(&ColaCambios);
 }

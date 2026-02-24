@@ -9,6 +9,7 @@
 #define TODO_OK     1
 #define SIN_MEM    -2
 #define DUPLICADO  -3
+#define VACIA      -4
 
 #define SIN_DUPLICADOS  0
 #define CON_DUPLICADOS  1
@@ -36,8 +37,9 @@ void RecorrerLista(const tLista* pl, tAccion Accion);
 int InsertarEnOrdenLista(tLista* pl, const void *Dato, unsigned Bytes, int Dup, tCmp Cmp, tAcum Acum);
 int OrdenarLista(tLista *p, tCmp Cmp);
 tNodoLista* BuscarAnteriorDelMenor(tLista* lista, tCmp comparar);
-int BuscarPrimeroCondicionLista(const tLista* p, void* Dato, unsigned Bytes, tCondicion Condicion, const void *Contexto);
+int BuscarPrimeroCondicionLista(tLista* p, void* Dato, unsigned Bytes, tCondicion Condicion, const void *Contexto);
 int PonerAlFinalEnLista(tLista *p, const void *Dato, unsigned Bytes);
+int verPrimeroLista(tLista *p, void *Dato, unsigned Bytes);
 
 #endif // LISTA_H_INCLUDED
 

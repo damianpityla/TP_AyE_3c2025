@@ -63,20 +63,20 @@ typedef struct
 }
 tParPadre;
 
-int GenerarEstructuraVolcan(tEstado* estado, tConfig* config);
-void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* config, int* proximoId);
+int GenerarEstructuraVolcan(tEstado* estado, tConfig *config);
+void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig *config, int *proximoId);
 void CensoDeCamaras(tNodoArbolNario* raiz, tLista* listaPunteros);
 tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros);
 tNodoArbolNario* SortearCamaraCualquiera(tLista* listaPunteros);
-void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int xCentro);
+void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado *estado, int nivel, int xCentro);
 void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char* nombreArchivo);
 void ActualizarMapaPadres(tNodoArbolNario* raiz, tLista* mapaPadres);
-int ObtenerProfundidadCamara(const tLista* mapaPadres, tNodoArbolNario* nodo);
-int BuscarPadre(const tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre);
-
+int ObtenerProfundidadCamara(tLista* mapaPadres, tNodoArbolNario* nodo);
+int BuscarPadre(tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre);
+void PosicionarJugadorEnInicio(tEstado *estado);
 //otros archivos
 void ConstruirMapaPadres(tNodoArbolNario *Raiz, tLista *pMapaPadres);
-int Profundidad(const tLista *MapaPadres, tNodoArbolNario *Nodo);
+int Profundidad(tLista *MapaPadres, tNodoArbolNario *Nodo);
 int AgregarHijo(tNodoArbolNario *Padre, const void *InfoHijo, unsigned TamInfo, tNodoArbolNario **pHijo);
 int CondEsHijo(const void *Elem, const void *Contexto);
 void AvanzarLava(tNodoArbolNario* nodo, int nivelObjetivo, int nivelActual);

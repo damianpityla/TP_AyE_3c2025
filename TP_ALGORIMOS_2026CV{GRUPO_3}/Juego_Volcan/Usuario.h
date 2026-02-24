@@ -83,16 +83,24 @@ typedef struct
     int partidas; ///ver si queremos guardar las partidas jugadas o no
 }tRanking;
 
+typedef enum
+{
+    OPC_INICIAR_PARTIDA = 0,
+    OPC_REGISTRARSE,
+    OPC_VER_RANKING,
+    OPC_DESCONECTAR
+}eMenuOnline;
 
 ///////MENU
 int Menu();
 
-int MenuOffLine();/// SEGURO ACA VAYA EL SOCKET PERO NO SE BIEN BIEN
+int MenuOffLine();
 int MenuOnLine();
 
 void AcumularRanking(void *nodoInfo, const void *elem);
 void MostrarRanking(const void *a);
 int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice);
+int SolicitarDatoUsuario(char *bufferDato, const char *titulo);
 int GenerarRanking(const char *ArchPartidas, tArbolBin *pIndice, tLista *pRanking);
 int cmpRankingPorId(const void *a, const void *b);
 int cmpIndicePorId(const void* a, const void* b);

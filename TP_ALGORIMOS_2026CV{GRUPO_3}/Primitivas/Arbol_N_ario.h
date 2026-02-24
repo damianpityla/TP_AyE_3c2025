@@ -27,12 +27,13 @@ typedef struct sNodoArbolNario
 typedef tNodoArbolNario* tArbolNario;
 
 
-void CrearArbolNario(tArbolNario* pa);
-void VaciarArbolNario(tArbolNario* pa);
+void CrearArbolNario(tArbolNario* p);
+void VaciarArbolNario(tArbolNario* p);
 
-int CrearNodoArbolNario(tArbolNario* pa, const void* pd, unsigned tam);
+int CrearNodoArbolNario(tArbolNario* p, const void *Dato, unsigned Bytes);
 int EsHoja(const tNodoArbolNario* Nodo);
-int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario** destino);
+int HijoEnPos(const tNodoArbolNario *actual, int pos, tNodoArbolNario **destino);
+tNodoArbolNario *ObtenerPrimeraHoja(tNodoArbolNario *p);
 
 
 #endif // ARBOL_H_INCLUDED

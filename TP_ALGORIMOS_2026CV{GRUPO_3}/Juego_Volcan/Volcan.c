@@ -5,14 +5,13 @@ int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
     tInfoCamara infoRaiz;
     int camarasCreadas = 1;
 
-    infoRaiz.id = 0; // El Crater suele ser ID 0
+    infoRaiz.id = 0;
     infoRaiz.es_salida = 1;
     infoRaiz.hay_premio = 0;
     infoRaiz.hay_vida = 0;
     infoRaiz.hay_lava = 0;
     infoRaiz.cant_criaturas = 0;
 
-    // Inicializamos el arbol
     estado->Volcan = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
     if (!estado->Volcan) return 0;
 
@@ -72,7 +71,7 @@ void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* conf
     for (i = 0; i < cantidadHijos; i++)
     {
         nuevaInfo.id = *proximoId;
-        (*proximoId)++; // Incremento más limpio
+        (*proximoId)++;
 
         nuevaInfo.hay_lava = 0;
         nuevaInfo.es_salida = 0;
@@ -148,7 +147,8 @@ void CensoDeCamaras(tNodoArbolNario* nodo, tLista* listaCamaras)
     tLista hijos;
     tNodoArbolNario* h;
 
-    if (!nodo) return;
+    if(!nodo)
+        return;
 
     PonerAlFinalEnLista(listaCamaras, &nodo, sizeof(tNodoArbolNario*));
 
@@ -172,7 +172,7 @@ tNodoArbolNario* SortearCamaraCualquiera(tLista* listaPunteros)
         return NULL;
 
     it = *listaPunteros;
-    while (it)
+    while(it)
     {
         cant++;
         it = it->sig;
@@ -202,7 +202,8 @@ tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros)
         it = &((*it)->sig);
     }
 
-    if (cant == 0) return NULL;
+    if(!cant)
+        return NULL;
 
     pos = rand() % cant;
     it = listaPunteros;
@@ -218,79 +219,141 @@ tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros)
 
     return res;
 }
-void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char* nombreArchivo)
+void PosicionarJugadorEnInicio(tEstado *estado)
 {
-    FILE* pf;
+    tNodoArbolNario *hoja = ObtenerPrimeraHoja(estado->Volcan);
+    if(!hoja)
+    {
+        estado->Volcan = hoja;
+    }
+}
+void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char *NombreArchivo)
+{
+    FILE* pVolcan;
 
-    pf = fopen(nombreArchivo, "w");
-    if (!pf) return;
+    pVolcan = fopen(NombreArchivo, "wt");
+    if(!pVolcan)
+        return;
 
-    DibujarArbolEnArchivo(pf, raiz, estado, 0, 70);
+    DibujarArbolEnArchivo(pVolcan, raiz, estado, 0, 75);
 
-    fclose(pf);
+    fclose(pVolcan);
 }
 
-void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int xCentro)
+void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int coordenadaX)
 {
-    tInfoCamara* info;
-    tLista hijos;
+    tNodoArbolNario *HijoActual;
+    tInfoCamara *info;
+    tLista ListaHijos;
     tLista aux;
-    int i;
-    int k;
+    int espacio, conector, separador;
     int cantidadHijos;
     int nuevaX;
     int anchoAbanico;
-    int separacionH;
+    int SeparacionHorizontal;
 
-    if (!nodo || !pf) return;
+    if (!nodo || !pf)
+        return;
+
+    SeparacionHorizontal = (nivel == 0) ? 42 : (nivel == 1) ? 20 : (nivel == 2) ? 10 : 5;
 
     info = (tInfoCamara*)nodo->info;
-    separacionH = (nivel == 0) ? 36 : (nivel == 1) ? 18 : 8;
 
-    for (i = 0; i < xCentro; i++) fprintf(pf, " ");
+    for(espacio = 0; espacio < coordenadaX; espacio++)
+        fprintf(pf, " ");
 
-    if (nivel == 0) fprintf(pf, "S");
-    else fprintf(pf, "O");
+    if(nivel == 0)
+        fprintf(pf, "S");
+    else
+        fprintf(pf, "O");
 
-    if (nodo == estado->PosJugador) fprintf(pf, "[J]");
+    if(nodo == estado->PosJugador)
+        fprintf(pf, "[J]");
 
     if (info->cant_criaturas > 0 || info->hay_premio || info->hay_lava || info->hay_vida)
     {
         fprintf(pf, "[");
-        if (info->cant_criaturas > 0) fprintf(pf, "C");
-        if (info->hay_premio) fprintf(pf, "P");
-        if (info->hay_vida) fprintf(pf, "V");
-        if (info->hay_lava) fprintf(pf, "L");
+        if(info->cant_criaturas > 0)
+            fprintf(pf, "C");
+        if(info->hay_premio)
+            fprintf(pf, "P");
+        if(info->hay_vida)
+            fprintf(pf, "V");
+        if(info->hay_lava)
+            fprintf(pf, "L");
         fprintf(pf, "]");
     }
     fprintf(pf, "\n");
 
-    hijos = nodo->hijos;
-    if (hijos)
+    ListaHijos = nodo->hijos;
+    if(ListaHijos)
     {
         cantidadHijos = 0;
-        aux = hijos;
-        while (aux)
+        aux = ListaHijos;
+        while(aux)
         {
             cantidadHijos++;
             aux = aux->sig;
         }
 
-        for (i = 0; i < xCentro; i++) fprintf(pf, " ");
+        anchoAbanico = (cantidadHijos - 1) * SeparacionHorizontal;
+        nuevaX = coordenadaX - (anchoAbanico / 2);
 
-        if (cantidadHijos == 1) fprintf(pf, "|\n");
-        else if (cantidadHijos == 2) fprintf(pf, "/ \\\n");
-        else fprintf(pf, "/|\\\n");
-
-        anchoAbanico = (cantidadHijos - 1) * separacionH;
-        nuevaX = xCentro - (anchoAbanico / 2);
-
-        while (hijos)
+        for(espacio = 0; espacio < coordenadaX; espacio++)
         {
-            tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-            DibujarArbolEnArchivo(pf, h, estado, nivel + 1, nuevaX);
-            nuevaX += separacionH;
-            hijos = hijos->sig;
+            fprintf(pf, " ");
+        }
+        fprintf(pf, "|\n");
+
+        if (cantidadHijos > 1)
+        {
+            for(espacio = 0; espacio < nuevaX; espacio++)
+                fprintf(pf, " ");
+
+            for(conector = 0; conector <= anchoAbanico; conector++)
+                fprintf(pf, "-");
+
+            fprintf(pf, "\n");
+
+            for(espacio = 0; espacio < nuevaX; espacio++)
+                fprintf(pf, " ");
+
+            for(conector = 0; conector < cantidadHijos; conector++)
+            {
+                fprintf(pf, "+");
+                if(conector < cantidadHijos - 1)
+                {
+                    for(separador = 0; separador < SeparacionHorizontal - 1; separador++)
+                        fprintf(pf, " ");
+                }
+            }
+            fprintf(pf, "\n");
+            for(espacio = 0; espacio < nuevaX; espacio++)
+                fprintf(pf, " ");
+
+            for(conector = 0; conector < cantidadHijos; conector++)
+            {
+                fprintf(pf, "|");
+                if(conector < cantidadHijos - 1)
+                {
+                    for(separador = 0; separador < SeparacionHorizontal - 1; separador++)
+                        fprintf(pf, " ");
+                }
+            }
+            fprintf(pf, "\n");
+        }
+        else
+        {
+            for(espacio = 0; espacio < coordenadaX; espacio++)
+                fprintf(pf, " ");
+            fprintf(pf, "|\n");
+        }
+        while(ListaHijos)
+        {
+            HijoActual = *(tNodoArbolNario**)ListaHijos->Info;
+            DibujarArbolEnArchivo(pf, HijoActual, estado, nivel + 1, nuevaX);
+            nuevaX += SeparacionHorizontal;
+            ListaHijos = ListaHijos->sig;
         }
     }
 }
@@ -300,7 +363,7 @@ void ActualizarMapaPadres(tNodoArbolNario* raiz, tLista* mapaPadres)
     ConstruirMapaPadres(raiz, mapaPadres);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int ObtenerProfundidadCamara(const tLista* mapaPadres, tNodoArbolNario* nodo)
+int ObtenerProfundidadCamara(tLista* mapaPadres, tNodoArbolNario* nodo)
 {
     return Profundidad(mapaPadres, nodo);
 }
@@ -333,7 +396,7 @@ void ConstruirMapaPadres(tNodoArbolNario *Raiz, tLista *pMapaPadres)
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int BuscarPadre(const tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre)
+int BuscarPadre(tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre)
 {
     tParPadre parEncontrado;
     int resultado;
@@ -347,12 +410,11 @@ int BuscarPadre(const tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario
 
         return 1;
     }
-
     return 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///es como encontrar el nivel (segun copilot es menos laburo asi)
-int Profundidad(const tLista *MapaPadres, tNodoArbolNario *Nodo)
+int Profundidad(tLista *MapaPadres, tNodoArbolNario *Nodo)
 {
     int profundidad = 0;
     tNodoArbolNario* padreAux;
