@@ -15,8 +15,8 @@
 void EjecutarCicloJuego(tEstado* estado, struct sConfig* config, const char *ArchConfiguraciones);
 int  ProcesarEntradaJugador(tCola* colaMovimientos);
 void ActualizarEstadoJuego(tEstado* estado, tCola* colaMovimientos, int* jugando);
-void DibujarInterfaz(const tEstado* estado);
+void DibujarInterfaz(const tEstado* estado, int nivelLavaActual, int alturaMaxima);
 void MostrarMapaJerarquico(tNodoArbolNario* nodo, const tEstado* estado, int nivel, int posPadre, int esUltimo);
-
+void MostrarRegistroMovimientos(tEstado* estado);
 #endif // JUEGO_H_INCLUDED
 

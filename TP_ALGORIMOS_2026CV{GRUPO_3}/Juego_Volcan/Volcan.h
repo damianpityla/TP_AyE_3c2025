@@ -8,6 +8,8 @@
 
 #define ARCH_VOLCAN "volcan.txt"
 
+#define TAM_DESCRIPCION 50
+
 #define JUGADOR  'J'
 #define SALIDA   'S'
 #define PREMIO   'P'
@@ -35,14 +37,20 @@ typedef struct {
     unsigned char hay_premio;
     unsigned char hay_vida;
     unsigned char hay_lava;
-    int cant_criaturas; // Agregalo para el bucle de "config->criaturas"
+    int cant_criaturas;
 } tInfoCamara;
 
+typedef struct {
+    int idOrigen;
+    int idDestino;
+    char descripcion[TAM_DESCRIPCION + 1];
+} tMovimientoLog;
 
 typedef struct sEstado {
     tNodoArbolNario* Volcan;
     tNodoArbolNario* PosJugador;
     tLista MapaPadres;
+    tLista Historial;
     int Vidas;
     int Puntaje;
     int TurnosJugados;
@@ -66,7 +74,7 @@ void ActualizarMapaPadres(tNodoArbolNario* raiz, tLista* mapaPadres);
 int ObtenerProfundidadCamara(const tLista* mapaPadres, tNodoArbolNario* nodo);
 int BuscarPadre(const tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPadre);
 
-// Estas vienen de otros archivos
+//otros archivos
 void ConstruirMapaPadres(tNodoArbolNario *Raiz, tLista *pMapaPadres);
 int Profundidad(const tLista *MapaPadres, tNodoArbolNario *Nodo);
 int AgregarHijo(tNodoArbolNario *Padre, const void *InfoHijo, unsigned TamInfo, tNodoArbolNario **pHijo);

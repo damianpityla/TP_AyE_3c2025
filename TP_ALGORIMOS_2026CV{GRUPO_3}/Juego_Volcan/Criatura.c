@@ -35,7 +35,6 @@ int EsAncestro(tNodoArbolNario* potencialAncestro, tNodoArbolNario* objetivo)
     hijos = potencialAncestro->hijos;
     while (hijos)
     {
-        /* Casteo de Info a puntero de nodo para la recursion */
         if (EsAncestro(*(tNodoArbolNario**)hijos->Info, objetivo)) return 1;
         hijos = hijos->sig;
     }
@@ -50,6 +49,7 @@ void VerificarCombate(tEstado* estado)
     {
         info->cant_criaturas = 0;
         estado->Vidas--;
+        Beep(250, 400);
 
         if (estado->Vidas > 0)
         {

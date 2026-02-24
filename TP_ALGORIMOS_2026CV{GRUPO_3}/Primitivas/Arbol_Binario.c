@@ -42,16 +42,16 @@ int InsertarEnArbolBin(tArbolBin* p, const void *Dato, unsigned Bytes, tCmp cmp)
 tArbolBin* BusquedaEnArbolBin(tArbolBin* p, const void *Dato, tCmp cmp)
 {
     int rc;
-    if(!(*p))
+    if(!*p)
         return NULL;
 
-    rc=cmp((*p)->Info, Dato);
+    rc = cmp(Dato, (*p)->Info);
 
-    if(rc > 0) //nos movemos a la izquierda
+    if(rc < 0)
     {
         return BusquedaEnArbolBin(&(*p)->Izq, Dato, cmp);
     }
-    else if(rc < 0)
+    else if(rc > 0)
     {
         return BusquedaEnArbolBin(&(*p)->Der, Dato, cmp);
     }
@@ -61,9 +61,8 @@ tArbolBin* BusquedaEnArbolBin(tArbolBin* p, const void *Dato, tCmp cmp)
 void VaciarArbolBin(tArbolBin* p)
 {
     if(!*p)
-    {
         return;
-    }
+
     VaciarArbolBin(&(*p)->Izq);
     VaciarArbolBin(&(*p)->Der);
     free((*p)->Info);

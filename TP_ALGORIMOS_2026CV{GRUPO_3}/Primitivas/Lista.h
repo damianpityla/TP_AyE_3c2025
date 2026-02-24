@@ -25,7 +25,7 @@ typedef struct sNodoLista
     void* Info;
     unsigned TamInfo;
     struct sNodoLista* sig;
-} tNodoLista;
+}tNodoLista;
 
 typedef tNodoLista *tLista;
 

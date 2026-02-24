@@ -11,21 +11,19 @@ int main()
     CrearArbolBin(&indiceJugadores);
     srand((unsigned int)time(NULL));
 
-    printf("Cargando indice de jugadores desde %s...\n", ARCH_JUGADORES);
+    CargarIndiceBinario(&indiceJugadores, ARCH_INDICE);
 
-    if (CargarIndiceJugadores(ARCH_JUGADORES, &indiceJugadores) == TODO_OK) {
-        printf("Indice cargado correctamente.\n");
-    } else {
-        printf("No se encontro archivo de jugadores. Se iniciara vacio.\n");
-    }
-
-    if (iniciar_entorno_socket() != 0) {
+    if (iniciar_entorno_socket() != 0)
+    {
         printf("Error al iniciar WinSock.\n");
+        VaciarArbolBin(&indiceJugadores);
         return -1;
     }
-
     ejecutar_servidor(puerto, &indiceJugadores);
 
+    GuardarIndiceBinario(indiceJugadores, ARCH_INDICE);
+
+    printf("Cerrando servidor y liberando memoria...\n");
     VaciarArbolBin(&indiceJugadores);
     WSACleanup();
 

@@ -36,9 +36,9 @@ int main()
         puts("Iniciando en modo OFFLINE (No se guardaran puntuaciones).");
     }
 
-    if(!CargarConfiguracion(&config, "config.txt"))
+    if(!CargarConfiguracion(&config, ARCH_CONFIG))
     {
-        puts("Error critico: No se encontro config.txt");
+        printf("Error critico: No se encontro el archivo %s\n", ARCH_CONFIG);
         VaciarLista(&ranking);
         VaciarArbolBin(&indice);
         return 1;
@@ -54,9 +54,9 @@ int main()
 
     PoblarCamaras(&estado, &config);
 
-    GrabarArchivoVolcan(estado.Volcan, &estado, "volcan.txt");
+    GrabarArchivoVolcan(estado.Volcan, &estado, ARCH_VOLCAN);
 
-    EjecutarCicloJuego(&estado, &config, "config.txt");
+    EjecutarCicloJuego(&estado, &config, ARCH_CONFIG);
 
     if(modoOnline)
     {

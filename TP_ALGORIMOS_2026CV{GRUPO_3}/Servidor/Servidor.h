@@ -23,6 +23,7 @@ int cmpIndicePorNombre(const void *a, const void *b);
 int altaJugadorServidor(const char* arch, tArbolBin* pIndice, const char* nombre, tCmp cmp);
 int registrarPartidaEnServidor(const char* arch, int id, float pts, int movs);
 int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice);
-
+int cmpRankingPorPuntos(const void* a, const void* b);
+tNodoArbolBin** BuscarPorIdEnArbol(tArbolBin* p, int id);
 
 #endif // SERVIDOR_H_INCLUDED
