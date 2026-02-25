@@ -6,11 +6,10 @@
 #include <string.h>
 
 #define TODO_OK 1
-#define SIN_MEM -2
+#define SIN_MEM -1
 #define DUPLICADO -3
 #define ARBOL_VACIO -4
 
-#define MIN(X,Y)((X) < (Y) ?(X) : (Y))
 
 typedef struct sNodoArbolBin
 {
@@ -24,10 +23,10 @@ typedef tNodoArbolBin *tArbolBin;
 typedef void (*tAccion)(const void* elem);
 typedef int  (*tCmp)(const void* a, const void* b);
 
-void CrearArbolBin(tArbolBin *p);
-void VaciarArbolBin(tArbolBin* p);
-int InsertarEnArbolBin(tArbolBin* p, const void *Dato, unsigned Bytes, tCmp cmp);
-tArbolBin* BusquedaEnArbolBin(tArbolBin* p, const void *Dato, tCmp cmp);
+void        CrearArbolBin               (tArbolBin *p);
+void        VaciarArbolBin              (tArbolBin* p);
+int         InsertarEnArbolBin          (tArbolBin* p, const void *Dato, unsigned Bytes, tCmp cmp);
+tArbolBin  *BusquedaEnArbolBin          (tArbolBin* p, const void *Dato, tCmp cmp);
 
 
 #endif // ARBOLBINARIO_H_INCLUDED

@@ -1,4 +1,5 @@
 #include "Arbol_Binario.h"
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CrearArbolBin(tArbolBin *p)
 {
     *p = NULL;
@@ -14,6 +15,7 @@ int InsertarEnArbolBin(tArbolBin* p, const void *Dato, unsigned Bytes, tCmp cmp)
         rc = cmp(Dato, (*p)->Info);
         if(rc < 0)
             return InsertarEnArbolBin(&(*p)->Izq, Dato, Bytes, cmp);
+
         if(rc > 0)
             return InsertarEnArbolBin(&(*p)->Der, Dato, Bytes, cmp);
 
@@ -67,5 +69,6 @@ void VaciarArbolBin(tArbolBin* p)
     VaciarArbolBin(&(*p)->Der);
     free((*p)->Info);
     free(*p);
+
     *p = NULL;
 }

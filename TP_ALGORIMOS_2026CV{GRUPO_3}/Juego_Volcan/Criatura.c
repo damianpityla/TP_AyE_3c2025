@@ -1,8 +1,8 @@
 #include "Criatura.h"
 //////////////////////////////////////////////////////////////////////////////
-tNodoArbolNario *DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstado* estado)
+tNodoArbolNario *DeterminarDireccionHaciaJugador(tNodoArbolNario *actual, tEstado *estado)
 {
-    tNodoArbolNario *padre = NULL;;
+    tNodoArbolNario *padre = NULL;
     tNodoArbolNario *h;
     tLista hijos;
 
@@ -28,111 +28,79 @@ tNodoArbolNario *DeterminarDireccionHaciaJugador(tNodoArbolNario* actual, tEstad
 
     return NULL;
 }
-int EsAncestro(tNodoArbolNario* potencialAncestro, tNodoArbolNario* objetivo)
+//////////////////////////////////////////////////////////////////////////////
+int EsAncestro(tNodoArbolNario *potencialAncestro, tNodoArbolNario* objetivo)
 {
     tLista hijos;
 
-    if (!potencialAncestro || !objetivo) return 0;
-    if (potencialAncestro == objetivo) return 1;
+    if (!potencialAncestro || !objetivo)
+        return NO_EXISTE;
+
+    if (potencialAncestro == objetivo)
+    return TODO_OK;
 
     hijos = potencialAncestro->hijos;
     while (hijos)
     {
-        if (EsAncestro(*(tNodoArbolNario**)hijos->Info, objetivo)) return 1;
+        if (EsAncestro(*(tNodoArbolNario**)hijos->Info, objetivo))
+            return TODO_OK;
+
         hijos = hijos->sig;
     }
-    return 0;
+    return NO_EXISTE;
 }
+//////////////////////////////////////////////////////////////////////////////
 void VerificarCombate(tEstado* estado)
 {
-    tInfoCamara* info;
-    info = (tInfoCamara*)estado->PosJugador->info;
+    tInfoCamara* info = (tInfoCamara*)estado->PosJugador->info;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int i;
 
     if (info->cant_criaturas > 0)
     {
         info->cant_criaturas = 0;
         estado->Vidas--;
-        Beep(250, 400);
+        Beep(250, 600);
 
         if (estado->Vidas > 0)
         {
-            printf("\n¡FUISTE ALCANZADO POR UNA CRIATURA! Pierdes una vida.\n");
-            printf("Reapareces en la misma camara...\n");
-            system("pause");
+            system("cls");
+            SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+            printf("\n\t%c", 201);
+
+            for(i = 0; i < 52; i++)
+                printf("%c", 205);
+
+            printf("%c\n", 187);
+
+            printf("\t%c  [!] PELIGRO: HAS SIDO ALCANZADO POR UNA CRIATURA  %c\n", 186, 186);
+
+            printf("\t%c", 204);
+
+            for(i = 0; i < 52 ; i++)
+                printf("%c", 205);
+
+            printf("%c\n", 185);
+
+            SetConsoleTextAttribute(hConsole, 7);
+            printf("\t%c  Vidas restantes: %-26d       %c\n", 186, estado->Vidas, 186);
+            printf("\t%c  Reapareciendo en la misma camara...               %c\n", 186, 186);
+
+            printf("\t%c", 200);
+
+            for(i = 0; i < 52 ; i++)
+                printf("%c", 205);
+
+            printf("%c\n", 188);
+
+            SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+            printf("\n\t>> Presione cualquier tecla para continuar la exploracion...");
+            SetConsoleTextAttribute(hConsole, 7);
         }
-    }
-}
-int EsAncestroPorId(tNodoArbolNario* potencialAncestro, int idObjetivo)
-{
-    tCola cola;
-    tNodoArbolNario* actual;
-    tLista hijos;
-    int encontrado = 0;
-
-    if (((tInfoCamara*)potencialAncestro->info)->id == idObjetivo) return 1;
-
-    CrearCola(&cola);
-    PonerEnCola(&cola, &potencialAncestro, sizeof(tNodoArbolNario*));
-
-    while (!ColaVacia(&cola) && !encontrado)
-    {
-        SacarDeCola(&cola, &actual, sizeof(tNodoArbolNario*));
-        if (((tInfoCamara*)actual->info)->id == idObjetivo) encontrado = 1;
-
-        hijos = actual->hijos;
-        while (hijos && !encontrado)
+        else
         {
-            tNodoArbolNario* h = *(tNodoArbolNario**)hijos->Info;
-            PonerEnCola(&cola, &h, sizeof(tNodoArbolNario*));
-            hijos = hijos->sig;
+            printf("\n [!] Sin vidas restantes. El volcan reclama tu alma...\n");
         }
-    }
-    VaciarCola(&cola);
-    return encontrado;
-}
-void RecorrerBFS(tNodoArbolNario *Raiz, tAccionNodo Accion, void *Contexto)
-{
-    tCola Cola;
-    tLista ListaHijos;
-    tNodoArbolNario *Actual, *Hijo;
-
-    if(!Raiz || !Accion) return;
-
-    CrearCola(&Cola);
-    PonerEnCola(&Cola, &Raiz, sizeof(tNodoArbolNario*));
-
-    while(!ColaVacia(&Cola))
-    {
-        SacarDeCola(&Cola, &Actual, sizeof(tNodoArbolNario*));
-        Accion(Actual, Contexto);
-
-        ListaHijos = Actual->hijos;
-        while(ListaHijos)
-        {
-            Hijo = *(tNodoArbolNario **)ListaHijos->Info;
-            PonerEnCola(&Cola, &Hijo, sizeof(tNodoArbolNario*));
-            ListaHijos = ListaHijos->sig;
-        }
-    }
-    VaciarCola(&Cola);
-}
-
-void RecorrerDFSpreorden(const tNodoArbolNario *Nodo, tAccionNodo Accion, void *Contexto)
-{
-    tLista actual;
-    tNodoArbolNario* hijo;
-
-    if(!Nodo || !Accion)
-        return;
-
-    Accion((tNodoArbolNario*)Nodo, Contexto);
-    actual = Nodo->hijos;
-
-    while(actual)
-    {
-        hijo = *(tNodoArbolNario**)actual->Info;
-        RecorrerDFSpreorden(hijo, Accion, Contexto);
-        actual = actual->sig;
     }
 }
 //////////////////////////////////////////////////////////////////////////////

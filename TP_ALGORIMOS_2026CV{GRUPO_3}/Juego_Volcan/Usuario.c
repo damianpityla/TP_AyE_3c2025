@@ -1,7 +1,6 @@
-#include "Usuario.h"
 #include "../Servidor/Servidor.h"
-#define OPC_OFFLINE 2
-
+#include "Usuario.h"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int Menu()
 {
     if (iniciar_entorno_socket() != 0)
@@ -20,6 +19,7 @@ int Menu()
     closesocket(sock);
     return MenuOnLine();
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MostrarMenuGeneral(int opcionSel, int tipoMenu)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -34,7 +34,8 @@ void MostrarMenuGeneral(int opcionSel, int tipoMenu)
     SetConsoleTextAttribute(hConsole, colorPrincipal | FOREGROUND_INTENSITY);
 
     printf("\t%c", 201);
-    for(col = 0; col < 60; col++) printf("%c", 205);
+    for(col = 0; col < 60; col++)
+        printf("%c", 205);
     printf("%c\n", 187);
 
     SetConsoleTextAttribute(hConsole, colorPrincipal | FOREGROUND_INTENSITY);
@@ -71,7 +72,7 @@ void MostrarMenuGeneral(int opcionSel, int tipoMenu)
     printf("%c\n", 188);
     SetConsoleTextAttribute(hConsole, 7);
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int MenuOffLine()
 {
     int opcion = 0, salir = 0, tecla, mapaPobre;
@@ -117,14 +118,12 @@ int MenuOffLine()
 
                     if (GenerarEstructuraVolcan(&estado, &config))
                     {
-                        ActualizarMapaPadres(estado.Volcan, &(estado.MapaPadres));
+                        ConstruirMapaPadres(estado.Volcan, &(estado.MapaPadres));
 
                         if (estado.Volcan != NULL && estado.Volcan->hijos != NULL)
                         {
                             mapaPobre = 0;
                             PoblarCamaras(&estado, &config);
-
-                            PosicionarJugadorEnInicio(&estado);
 
                             GrabarArchivoVolcan(estado.Volcan, &estado, ARCH_VOLCAN);
                             EjecutarCicloJuego(&estado, &config, ARCH_CONFIG);
@@ -148,15 +147,16 @@ int MenuOffLine()
     }
     return 0;
 }
-////********************************************************************************************************************************************************///
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int MenuOnLine()
 {
     int opcion = 0, salir = 0, tecla, bytes, idJugador, i, puesto, mapaPobreOnline;
-    char nombre[50], buffer[1024];
+    char nombre[TAM_NOMBRE], buffer[TAM_BUFFER];
     SOCKET sock;
     tEstado estado;
     tConfig config;
     tRanking reg;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     while (!salir)
     {
@@ -175,7 +175,7 @@ int MenuOnLine()
             Beep(800, 100);
             switch (opcion)
             {
-                case OPC_INICIAR_PARTIDA:
+            case OPC_INICIAR_PARTIDA:
                 system("cls");
                 if(SolicitarDatoUsuario(nombre, "INICIAR PARTIDA ONLINE"))
                 {
@@ -189,7 +189,7 @@ int MenuOnLine()
                         if (bytes > 0)
                         {
                             buffer[bytes] = '\0';
-                            if (strncmp(buffer, "OK", 2) == 0)
+                            if (strncmp(buffer, "OK", strlen("OK")) == 0)
                             {
                                 idJugador = atoi(buffer + 3);
 
@@ -211,14 +211,12 @@ int MenuOnLine()
 
                                     if (GenerarEstructuraVolcan(&estado, &config))
                                     {
-                                        ActualizarMapaPadres(estado.Volcan, &(estado.MapaPadres));
+                                        ConstruirMapaPadres(estado.Volcan, &(estado.MapaPadres));
 
                                         if (estado.Volcan != NULL && estado.Volcan->hijos != NULL)
                                         {
-                                            mapaPobreOnline = 0; // Salimos del bucle
+                                            mapaPobreOnline = 0;
                                             PoblarCamaras(&estado, &config);
-
-                                            PosicionarJugadorEnInicio(&estado);
 
                                             GrabarArchivoVolcan(estado.Volcan, &estado, ARCH_VOLCAN);
                                             EjecutarCicloJuego(&estado, &config, ARCH_CONFIG);
@@ -237,7 +235,33 @@ int MenuOnLine()
                             }
                             else
                             {
-                                printf("\nError: Usuario no registrado en el servidor.\n");
+                                system("cls");
+
+                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                printf("\n\t%c", 201);
+                                for(i = 0; i < 50; i++) printf("%c", 205);
+                                printf("%c\n", 187);
+
+                                printf("\t%c %-48s %c\n", 186, "          [!] ERROR DE ACCESO AL VOLCAN", 186);
+
+                                printf("\t%c", 204);
+                                for(i = 0; i < 50; i++) printf("%c", 205);
+                                printf("%c\n", 185);
+
+                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                printf("\t%c  ESTADO: %-39s %c\n", 186, "JUGADOR NO ENCONTRADO", 186);
+                                printf("\t%c  INFO  : Registrese en el menu de exploradores.  %c\n", 186, 186);
+
+                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                printf("\t%c", 200);
+                                for(i = 0; i < 50; i++) printf("%c", 205);
+                                printf("%c\n", 188);
+
+                                SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+                                printf("\n\t>> Presione una tecla para volver al menu principal...");
+                                SetConsoleTextAttribute(hConsole, 7);
+
+                                getch();
                             }
                         }
                         closesocket(sock);
@@ -246,54 +270,88 @@ int MenuOnLine()
                     {
                         printf("\nError: El servidor no responde.\n");
                     }
-                    printf("\nPresione una tecla para volver...");
-                    getch();
+
                 }
                 break;
 
             case OPC_REGISTRARSE:
                 if(SolicitarDatoUsuario(nombre, "REGISTRO DE EXPLORADOR"))
                 {
-                sock = conectar_servidor("127.0.0.1", 8080);
-                if (sock != INVALID_SOCKET)
-                {
-                    sprintf(buffer, "REGISTER %s", nombre);
-                    send(sock, buffer, (int)strlen(buffer), 0);
-                    bytes = recv(sock, buffer, sizeof(buffer) - 1, 0);
-                    if (bytes > 0)
+                    sock = conectar_servidor(IP_SERVIDOR, 8080);
+                    if (sock != INVALID_SOCKET)
                     {
-                        buffer[bytes] = '\0';
-                        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14 | FOREGROUND_INTENSITY);
-                        if (strcmp(buffer, "REGISTER_OK") == 0)
+                        sprintf(buffer, "REGISTER %s", nombre);
+                        send(sock, buffer, (int)strlen(buffer), 0);
+                        bytes = recv(sock, buffer, sizeof(buffer) - 1, 0);
+
+                        system("cls");
+
+                        if (bytes > 0)
                         {
-                            printf("\nUsuario '%s' registrado con exito!\n", nombre);
+                            buffer[bytes] = '\0';
+
+                            if (strcmp(buffer, "REGISTER_OK") == 0)
+                            {
+                                SetConsoleTextAttribute(hConsole, 10 | FOREGROUND_INTENSITY);
+                                printf("\n\t%c", 201);
+                                for(i = 0; i < 50; i++) printf("%c", 205);
+                                printf("%c\n", 187);
+                                printf("\t%c %-48s %c\n", 186, "          OPERACION EXITOSA", 186);
+                            }
+                            else
+                            {
+                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                printf("\n\t%c", 201);
+                                for(i = 0; i < 50; i++) printf("%c", 205);
+                                printf("%c\n", 187);
+                                printf("\t%c %-48s %c\n", 186, "          ERROR DE REGISTRO", 186);
+                            }
+
+                            // --- SEPARADOR ---
+                            printf("\t%c", 204);
+                            for(i = 0; i < 50; i++) printf("%c", 205);
+                            printf("%c\n", 185);
+
+                            SetConsoleTextAttribute(hConsole, 7);
+                            if (strcmp(buffer, "REGISTER_OK") == 0)
+                            {
+                                SetConsoleTextAttribute(hConsole, 10);
+                                printf("\t%c  %-47s %c\n", 186, "Usuario registrado con exito!", 186);
+                            }
+                            else if (strcmp(buffer, "ERROR_ALREADY_EXISTS") == 0)
+                            {
+                                SetConsoleTextAttribute(hConsole, 12);
+                                printf("\t%c  %-47s %c\n", 186, "El nombre de usuario ya existe.", 186);
+                            }
+                            else
+                            {
+                                SetConsoleTextAttribute(hConsole, 12);
+                                printf("\t%c  %-47s %c\n", 186, "Fallo en la comunicacion con la DB.", 186);
+                            }
+
+                            if (strcmp(buffer, "REGISTER_OK") == 0)
+                                SetConsoleTextAttribute(hConsole, 10 | FOREGROUND_INTENSITY);
+                            else
+                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+
+                            printf("\t%c", 200);
+                            for(i = 0; i < 50; i++) printf("%c", 205);
+                            printf("%c\n", 188);
                         }
-                        else if (strcmp(buffer, "ERROR_ALREADY_EXISTS") == 0)
-                        {
-                            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12 | FOREGROUND_INTENSITY);
-                            printf("\nError: El usuario ya existe.\n");
-                        }
-                        else
-                        {
-                            printf("\nError en la respuesta del servidor.\n");
-                        }
+                        closesocket(sock);
                     }
-                    closesocket(sock);
+
+                    SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+                    printf("\n\t>> Presione una tecla para volver al menu...");
+                    SetConsoleTextAttribute(hConsole, 7);
+                    getch();
                 }
-                else
-                {
-                    printf("\nError: Servidor no disponible.\n");
-                }
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11 | FOREGROUND_INTENSITY);
-                printf("\n Presione una tecla para volver...");
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-                getch();}
                 break;
 
 
-                case OPC_VER_RANKING:
+            case OPC_VER_RANKING:
                 system("cls");
-                sock = conectar_servidor("127.0.0.1", 8080);
+                sock = conectar_servidor(IP_SERVIDOR, 8080);
                 if (sock != INVALID_SOCKET)
                 {
                     HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -316,9 +374,10 @@ int MenuOnLine()
                         printf("\t%c  %-4s | %-22s | %-10s | %-14s %c\n", 186, "ID", "NOMBRE", "PUNTOS", "PARTIDAS", 186);
 
                         puesto = 1;
-                        do {
+                        do
+                        {
                             printf("\t%c", 204);
-                            for(int i = 0; i < 62; i++) printf("%c", 205);
+                            for(i = 0; i < 62; i++) printf("%c", 205);
                             printf("%c\n", 185);
 
                             SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
@@ -335,7 +394,8 @@ int MenuOnLine()
                             SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
                             printf("%c\n", 186);
                             puesto++;
-                        } while (recv(sock, (char*)&reg, sizeof(tRanking), 0) > 0 && reg.idJugador != -1);
+                        }
+                        while (recv(sock, (char*)&reg, sizeof(tRanking), 0) > 0 && reg.idJugador != -1);
                     }
                     else
                     {
@@ -368,6 +428,7 @@ int MenuOnLine()
     }
     return TODO_OK;
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int SolicitarDatoUsuario(char *bufferDato, const char *titulo)
 {
     HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -426,37 +487,6 @@ int SolicitarDatoUsuario(char *bufferDato, const char *titulo)
 
     return (p > bufferDato);
 }
-////********************************************************************************************************************************************************///
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice)
-{
-    tJugador jugador;
-    tIndiceJugador ind;
-    int NumReg = 0;
-
-    FILE *pJugadores = fopen(ArchJugadores, "rb");
-    if(!pJugadores)
-        return ERROR_ARCHIVO;
-
-    fread(&jugador, sizeof(tJugador), 1, pJugadores);
-    while(!feof(pJugadores))
-    {
-        ind.id = jugador.id;
-        ind.desplazamiento = NumReg;
-
-        strncpy(ind.nombre, jugador.nombre, sizeof(ind.nombre) - 1);
-        ind.nombre[sizeof(ind.nombre) - 1] = '\0';
-
-        InsertarEnArbolBin(pIndice, &ind, sizeof(tIndiceJugador), cmpIndicePorId);
-
-        NumReg++;
-        fread(&jugador, sizeof(tJugador), 1, pJugadores);
-    }
-
-    fclose(pJugadores);
-    return TODO_OK;
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MostrarRanking(const void *a)
 {
@@ -467,12 +497,4 @@ void MostrarRanking(const void *a)
            aux->TotalPuntos,
            aux->partidas);
 }
-///CMP///
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int cmpIndicePorId(const void *a, const void *b)
-{
-    const tIndiceJugador *ia = (const tIndiceJugador*)a;
-    const tIndiceJugador *ib = (const tIndiceJugador*)b;
 
-    return ia->id - ib->id;
-}

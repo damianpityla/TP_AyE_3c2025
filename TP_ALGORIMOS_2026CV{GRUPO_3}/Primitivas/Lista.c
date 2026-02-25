@@ -79,66 +79,6 @@ int InsertarEnOrdenLista(tLista* p, const void *Dato, unsigned Bytes, int Dup, t
     return TODO_OK;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-tNodoLista* BuscarAnteriorDelMenor(tLista* p, tCmp cmp)
-{
-    tNodoLista *anteriorMenor = NULL;
-    tNodoLista *anterior = NULL;
-    tNodoLista *actual;
-    tNodoLista *menor;
-
-    if(!*p || !(*p)->sig)
-        return NULL;
-
-    menor = *p;
-    actual = (*p)->sig;
-    anterior = *p;
-
-    while(actual)
-    {
-        if(cmp(menor->Info, actual->Info) > 0)
-        {
-            menor = actual;
-            anteriorMenor = anterior;
-        }
-
-        anterior = actual;
-        actual = actual->sig;
-    }
-
-    return anteriorMenor;
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int OrdenarLista(tLista* p, tCmp cmp)
-{
-    tNodoLista* anteriorMenor;
-    tNodoLista* nodoDesenganchado;
-
-    if(!*p)
-        return TODO_OK;
-
-    while(*p && (*p)->sig)
-    {
-        anteriorMenor = BuscarAnteriorDelMenor(p, cmp);
-
-        if(anteriorMenor == NULL)
-        {
-            p = &(*p)->sig;
-        }
-        else
-        {
-            nodoDesenganchado = anteriorMenor->sig;
-            anteriorMenor->sig = nodoDesenganchado->sig;
-
-            nodoDesenganchado->sig = *p;
-            *p = nodoDesenganchado;
-
-            p = &(*p)->sig;
-        }
-    }
-
-    return TODO_OK;
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int PonerAlFinalEnLista(tLista *p, const void *Dato, unsigned Bytes)
 {
     tNodoLista *nue;

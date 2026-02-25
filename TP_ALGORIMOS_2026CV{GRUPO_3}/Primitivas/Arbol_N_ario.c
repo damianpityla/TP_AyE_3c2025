@@ -7,10 +7,10 @@ void CrearArbolNario(tArbolNario *p)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void VaciarArbolNario(tArbolNario *p)
 {
+    tNodoArbolNario* hijo;
+
     if(!*p)
         return;
-
-    tNodoArbolNario* hijo;
 
     while(sacarPrimeroLista(&(*p)->hijos, &hijo, sizeof(tNodoArbolNario *)) == TODO_OK)
     {
@@ -21,94 +21,74 @@ void VaciarArbolNario(tArbolNario *p)
     *p = NULL;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CrearNodoArbolNario(tNodoArbolNario **pNodo, const void *info, unsigned tam)
+int CrearNodoArbolNario(tArbolNario *p, const void *Dato, unsigned Bytes)
 {
-    *pNodo = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
-    if (!(*pNodo)) return 0;
+    tNodoArbolNario *nue;
 
-    (*pNodo)->info = malloc(tam);
-    if (!((*pNodo)->info))
+    nue = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
+    if(!nue)
+        return SIN_MEM;
+
+    nue->info = malloc(Bytes);
+    if(!nue->info)
     {
-        free(*pNodo);
-        return 0;
+        free(nue);
+        return SIN_MEM;
     }
 
-    memcpy((*pNodo)->info, info, tam);
+    memcpy(nue->info, Dato, Bytes);
+    nue->tamInfo = Bytes;
 
-    // ESTA LÍNEA ES LA QUE FALTA:
-    (*pNodo)->hijos = NULL;
+    nue->hijos = NULL;
+    *p = nue;
 
-    return 1;
+    return TODO_OK;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int EsHoja(const tNodoArbolNario* Nodo)
 {
-    int esHoja = 0;
+    if(!Nodo)
+        return ESTRUCTURA_INVALIDA;
 
-    if(Nodo)
-    {
-        if(Nodo->hijos == NULL)
-        {
-            esHoja = 1;
-        }
-    }
+    if(!Nodo->hijos)
+        return ES_HOJA;
 
-    return esHoja;
+    return NO_HOJA;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///agregar un hijo y guardar la lista de hijos en un puntero al nodo hijo
-int AgregarHijo(tNodoArbolNario *padre, const void *infoHijo, unsigned tam, tNodoArbolNario **pHijo)
+int AgregarHijo(tNodoArbolNario *padre, const void *DatoHijo, unsigned Bytes, tNodoArbolNario **pHijo)
 {
-    tNodoArbolNario *nuevoHijo;
+    tNodoArbolNario *nueHijo;
+    int res;
 
-    nuevoHijo = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
-    if (!nuevoHijo) return 0;
+    res = CrearNodoArbolNario(&nueHijo, DatoHijo, Bytes);
+    if(res != TODO_OK)
+        return res;
 
-    nuevoHijo->info = malloc(tam);
-    if (!nuevoHijo->info)
+    res = PonerAlFinalEnLista(&(padre->hijos), &nueHijo, sizeof(tNodoArbolNario*));
+    if(res != TODO_OK)
     {
-        free(nuevoHijo);
-        return 0;
+        free(nueHijo->info);
+        free(nueHijo);
+        return res;
     }
 
-    memcpy(nuevoHijo->info, infoHijo, tam);
-    nuevoHijo->hijos = NULL;
+    if(pHijo)
+        *pHijo = nueHijo;
 
-    if (PonerAlFinalEnLista(&(padre->hijos), &nuevoHijo, sizeof(tNodoArbolNario*)))
-    {
-        if (pHijo) *pHijo = nuevoHijo;
-        return 1;
-    }
-
-    free(nuevoHijo->info);
-    free(nuevoHijo);
-    return 0;
+    return TODO_OK;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int CantHijos(const tNodoArbolNario *Padre)
-{
-    int Cant = 0;
-    tLista actual;
-
-    actual = Padre ? Padre->hijos : NULL;
-
-    while(actual)
-    {
-        Cant++;
-        actual = actual->sig;
-    }
-
-    return Cant;
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// esto es como querer encontrar V[i]
-int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario** destino)
+int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario **destino)
 {
     tLista listaHijos;
     int i = 0;
 
-    if (!actual || !actual->hijos)
-        return 0;
+    if(!actual)
+        return ESTRUCTURA_INVALIDA;
+
+    if(!actual->hijos)
+        return ARBOL_VACIO;
 
     listaHijos = actual->hijos;
 
@@ -121,11 +101,12 @@ int HijoEnPos(const tNodoArbolNario* actual, int pos, tNodoArbolNario** destino)
     if (listaHijos && listaHijos->Info)
     {
         *destino = *(tNodoArbolNario**)listaHijos->Info;
-        return 1;
+        return TODO_OK;
     }
 
-    return 0;
+    return NO_EXISTE;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 tNodoArbolNario* ObtenerPrimeraHoja(tNodoArbolNario *p)
 {
     if(!p)

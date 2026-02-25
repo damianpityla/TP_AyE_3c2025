@@ -1,8 +1,4 @@
-#include "Volcan.h"
 #include "Usuario.h"
-#include "Juego.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 int main()

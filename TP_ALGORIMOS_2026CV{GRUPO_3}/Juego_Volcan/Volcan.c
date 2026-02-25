@@ -1,11 +1,11 @@
 #include "Volcan.h"
-#include "../Config/Configuracion.h"
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
 {
     tInfoCamara infoRaiz;
-    int camarasCreadas = 1;
+    int camarasCreadas = 0;
 
-    infoRaiz.id = 0;
+    infoRaiz.id = camarasCreadas++;
     infoRaiz.es_salida = 1;
     infoRaiz.hay_premio = 0;
     infoRaiz.hay_vida = 0;
@@ -13,10 +13,12 @@ int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
     infoRaiz.cant_criaturas = 0;
 
     estado->Volcan = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
-    if (!estado->Volcan) return 0;
+    if(!estado->Volcan)
+        return 0;
 
     estado->Volcan->info = malloc(sizeof(tInfoCamara));
-    if (!estado->Volcan->info) {
+    if(!estado->Volcan->info)
+    {
         free(estado->Volcan);
         return 0;
     }
@@ -27,34 +29,6 @@ int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
     CrearRamasAleatorias(estado->Volcan, 0, config, &camarasCreadas);
 
     return 1;
-}
-tNodoArbolNario* CrearNodoCamara(int* proximoId)
-{
-    tNodoArbolNario* nuevoNodo;
-    tInfoCamara* info;
-
-    nuevoNodo = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
-    if (!nuevoNodo) return NULL;
-
-    info = (tInfoCamara*)malloc(sizeof(tInfoCamara));
-    if (!info)
-    {
-        free(nuevoNodo);
-        return NULL;
-    }
-    info->id = *proximoId;
-    *proximoId = *proximoId + 1;
-
-    info->hay_lava = 0;
-    info->hay_premio = (rand() % 100 < 15);
-    info->hay_vida = (rand() % 100 < 5);
-    info->cant_criaturas = 0;
-    info->es_salida = 0;
-
-    nuevoNodo->info = info;
-    nuevoNodo->hijos = NULL;
-
-    return nuevoNodo;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* config, int* proximoId)
@@ -75,8 +49,8 @@ void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* conf
 
         nuevaInfo.hay_lava = 0;
         nuevaInfo.es_salida = 0;
-        nuevaInfo.hay_premio = (rand() % 100 < 15);
-        nuevaInfo.hay_vida = (rand() % 100 < 5);
+        nuevaInfo.hay_premio = 0;
+        nuevaInfo.hay_vida = 0;
         nuevaInfo.cant_criaturas = 0;
 
         if(AgregarHijo(padre, &nuevaInfo, sizeof(tInfoCamara), &nodoHijoCreado))
@@ -85,63 +59,63 @@ void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* conf
         }
     }
 }
-void PoblarCamaras(tEstado* estado, struct sConfig* config)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PoblarCamaras(tEstado* estado, tConfig *config)
 {
     tLista listaAux;
-    tNodoArbolNario* camara = NULL;
-    tInfoCamara* datos = NULL;
+    tNodoArbolNario *camara = NULL;
+    tNodoArbolNario *nodoRaiz = NULL;
     int i;
 
     CrearLista(&listaAux);
 
-    if(estado->Volcan == NULL) return;
+    if(!estado->Volcan)
+        return;
 
     CensoDeCamaras(estado->Volcan, &listaAux);
 
-    if(listaAux == NULL) return;
+    if(listaAux)
+        sacarPrimeroLista(&listaAux, &nodoRaiz, sizeof(tNodoArbolNario*));
 
-    camara = SortearCamaraVacia(&listaAux);
-    if (camara != NULL)
-    {
-        estado->PosJugador = camara;
-    }
-    else
+    ///jugador
+    estado->PosJugador = ObtenerPrimeraHoja(estado->Volcan);
+    if(!estado->PosJugador)
     {
         VaciarLista(&listaAux);
         return;
     }
-
-    for (i = 0; i < config->criaturas; i++)
+    ///criaturas
+    for(i = 0; i < config->criaturas; i++)
     {
         camara = SortearCamaraCualquiera(&listaAux);
-        if (camara && camara->info)
-        {
-            datos = (tInfoCamara*)camara->info;
-            datos->cant_criaturas++;
-        }
-    }
+        if(!camara)
+            break;
 
-    for (i = 0; i < config->vidas_extra; i++)
+        ((tInfoCamara*)camara->info)->cant_criaturas++;
+    }
+    ///vidas
+    for(i = 0; i < config->vidas_extra; i++)
     {
         camara = SortearCamaraVacia(&listaAux);
-        if (camara && camara->info)
-        {
-            ((tInfoCamara*)camara->info)->hay_vida = 1;
-        }
-    }
+        if(!camara)
+            break;
 
-    for (i = 0; i < config->premios; i++)
+        ((tInfoCamara*)camara->info)->hay_vida = 1;
+    }
+    ///premios
+    for(i = 0; i < config->premios; i++)
     {
         camara = SortearCamaraVacia(&listaAux);
-        if (camara && camara->info)
-        {
-            ((tInfoCamara*)camara->info)->hay_premio = 1;
-        }
+        if (!camara)
+            break;
+
+        ((tInfoCamara*)camara->info)->hay_premio = 1;
+
     }
 
     VaciarLista(&listaAux);
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CensoDeCamaras(tNodoArbolNario* nodo, tLista* listaCamaras)
 {
     tLista hijos;
@@ -160,73 +134,69 @@ void CensoDeCamaras(tNodoArbolNario* nodo, tLista* listaCamaras)
         hijos = hijos->sig;
     }
 }
-tNodoArbolNario* SortearCamaraCualquiera(tLista* listaPunteros)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+tNodoArbolNario* SortearCamaraCualquiera(tLista *ListaCenso)
 {
-    tLista it;
+    tLista Actual;
     int cant = 0;
-    int pos;
+    int PosicionSorteada;
     int i;
-    tNodoArbolNario* res = NULL;
+    tNodoArbolNario *NodoElegido = NULL;
 
-    if (!listaPunteros || !(*listaPunteros))
+    if (!ListaCenso || !(*ListaCenso))
         return NULL;
 
-    it = *listaPunteros;
-    while(it)
+    Actual = *ListaCenso;
+    while(Actual)
     {
         cant++;
-        it = it->sig;
+        Actual = Actual->sig;
     }
 
-    pos = rand() % cant;
-    it = *listaPunteros;
+    PosicionSorteada = rand() % cant;
+    Actual = *ListaCenso;
 
-    for (i = 0; i < pos; i++)
-        it = it->sig;
+    for (i = 0; i < PosicionSorteada; i++)
+        Actual = Actual->sig;
 
-    res = *(tNodoArbolNario**)it->Info;
+    NodoElegido = *(tNodoArbolNario**)Actual->Info;
 
-    return res;
+    return NodoElegido;
 }
-tNodoArbolNario* SortearCamaraVacia(tLista* listaPunteros)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+tNodoArbolNario* SortearCamaraVacia(tLista* ListaCenso)
 {
-    tLista *it;
-    tNodoLista* elim;
+    tLista *Actual;
+    tNodoLista *elim;
     int cant = 0, pos, i;
-    tNodoArbolNario* res = NULL;
+    tNodoArbolNario* NodoExtraido = NULL;
 
-    it = listaPunteros;
-    while (*it)
+    Actual = ListaCenso;
+    while(*Actual)
     {
         cant++;
-        it = &((*it)->sig);
+        Actual = &((*Actual)->sig);
     }
 
     if(!cant)
         return NULL;
 
     pos = rand() % cant;
-    it = listaPunteros;
+    Actual = ListaCenso;
+
     for (i = 0; i < pos; i++)
-        it = &((*it)->sig);
+        Actual = &((*Actual)->sig);
 
-    elim = *it;
-    res = *(tNodoArbolNario**)elim->Info;
+    elim = *Actual;
+    NodoExtraido = *(tNodoArbolNario**)elim->Info;
 
-    *it = elim->sig;
+    *Actual = elim->sig;
     free(elim->Info);
     free(elim);
 
-    return res;
+    return NodoExtraido;
 }
-void PosicionarJugadorEnInicio(tEstado *estado)
-{
-    tNodoArbolNario *hoja = ObtenerPrimeraHoja(estado->Volcan);
-    if(!hoja)
-    {
-        estado->Volcan = hoja;
-    }
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const char *NombreArchivo)
 {
     FILE* pVolcan;
@@ -239,7 +209,7 @@ void GrabarArchivoVolcan(tNodoArbolNario* raiz, const tEstado* estado, const cha
 
     fclose(pVolcan);
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estado, int nivel, int coordenadaX)
 {
     tNodoArbolNario *HijoActual;
@@ -358,16 +328,6 @@ void DibujarArbolEnArchivo(FILE* pf, tNodoArbolNario* nodo, const tEstado* estad
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void ActualizarMapaPadres(tNodoArbolNario* raiz, tLista* mapaPadres)
-{
-    ConstruirMapaPadres(raiz, mapaPadres);
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int ObtenerProfundidadCamara(tLista* mapaPadres, tNodoArbolNario* nodo)
-{
-    return Profundidad(mapaPadres, nodo);
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ConstruirMapaPadres(tNodoArbolNario *Raiz, tLista *pMapaPadres)
 {
     tLista hijos;
@@ -413,7 +373,6 @@ int BuscarPadre(tLista *MapaPadres, tNodoArbolNario *Hijo, tNodoArbolNario **pPa
     return 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///es como encontrar el nivel (segun copilot es menos laburo asi)
 int Profundidad(tLista *MapaPadres, tNodoArbolNario *Nodo)
 {
     int profundidad = 0;
@@ -427,7 +386,6 @@ int Profundidad(tLista *MapaPadres, tNodoArbolNario *Nodo)
 
     return profundidad;
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int CondEsHijo(const void *Elem, const void *Contexto)
 {

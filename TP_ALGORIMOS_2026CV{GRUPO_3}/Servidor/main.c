@@ -4,7 +4,6 @@
 int main()
 {
     tArbolBin indiceJugadores;
-    int puerto = 8080;
 
     printf("=== INICIALIZANDO SERVIDOR DEL VOLCAN ===\n");
 
@@ -15,17 +14,17 @@ int main()
 
     if (iniciar_entorno_socket() != 0)
     {
-        printf("Error al iniciar WinSock.\n");
+        fprintf(stderr, "[ERROR] No se pudo inicializar WinSock.\n");
         VaciarArbolBin(&indiceJugadores);
         return -1;
     }
-    ejecutar_servidor(puerto, &indiceJugadores);
+    ejecutar_servidor(PUERTO_DB, &indiceJugadores);
 
     GuardarIndiceBinario(indiceJugadores, ARCH_INDICE);
 
     printf("Cerrando servidor y liberando memoria...\n");
     VaciarArbolBin(&indiceJugadores);
     WSACleanup();
-
+    printf("=== SERVIDOR APAGADO CORRECTAMENTE ===\n");
     return 0;
 }

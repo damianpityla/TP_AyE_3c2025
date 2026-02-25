@@ -1,17 +1,15 @@
 #include "Juego.h"
-#include "Criatura.h"
-#include <ctype.h>
-#include <conio.h>
-#include <mmsystem.h>
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void IniciarMusicaFondo()
 {
     PlaySound(TEXT(MUSICA_FONDO), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DetenerMusica()
 {
     PlaySound(NULL, 0, 0);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ubicarCursor(int x, int y)
 {
     HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -20,7 +18,7 @@ void ubicarCursor(int x, int y)
     dwPos.Y = y;
     SetConsoleCursorPosition(hCon, dwPos);
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int obtenerFilaActual()
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -29,17 +27,18 @@ int obtenerFilaActual()
         return csbi.dwCursorPosition.Y;
     return 0;
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AvanzarLava(tNodoArbolNario* nodo, int nivelObjetivo, int nivelActual)
 {
     tInfoCamara* info;
     tLista hijos;
 
-    if (!nodo) return;
+    if(!nodo)
+        return;
 
     info = (tInfoCamara*)nodo->info;
 
-    if (nivelActual == nivelObjetivo)
+    if(nivelActual == nivelObjetivo)
     {
         info->hay_lava = 1;
         info->hay_premio = 0;
@@ -56,27 +55,52 @@ void AvanzarLava(tNodoArbolNario* nodo, int nivelObjetivo, int nivelActual)
         hijos = hijos->sig;
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ProcesarMovimientoJugador(tEstado* estado, char tecla)
 {
     tNodoArbolNario* destino = NULL;
     tInfoCamara* info;
     tLista hijos;
     int indiceHijo;
-    int i;
+    int i, cantHijos = 0;
+    tLista aux;
 
-    if (tecla == 'w')
+    if(tecla == 'w')
     {
         BuscarPadre(&(estado->MapaPadres), estado->PosJugador, &destino);
     }
     else
     {
-        indiceHijo = (tecla == 'a') ? 0 : (tecla == 's') ? 1 : (tecla == 'd') ? 2 : (tecla == 'f') ? 3 : -1;
-        if (indiceHijo != -1)
+        switch(tecla)
+        {
+            case 'a': indiceHijo = 0;  break;
+            case 's': indiceHijo = 1;  break;
+            case 'd': indiceHijo = 2;  break;
+            case 'f': indiceHijo = 3;  break;
+            default:  indiceHijo = -1; break;
+        }
+        aux = estado->PosJugador->hijos;
+        while(aux)
+        {
+            cantHijos++;
+            aux = aux->sig;
+        }
+
+        if(indiceHijo != -1 && cantHijos > 0)
         {
             hijos = estado->PosJugador->hijos;
-            for (i = 0; i < indiceHijo && hijos; i++) hijos = hijos->sig;
-            if (hijos) destino = *(tNodoArbolNario**)hijos->Info;
+            if(cantHijos == 1)
+            {
+                destino = *(tNodoArbolNario**)hijos->Info;
+            }
+            else
+            {
+                for (i = 0; i < indiceHijo && hijos; i++)
+                    hijos = hijos->sig;
+
+                if(hijos)
+                    destino = *(tNodoArbolNario**)hijos->Info;
+            }
         }
     }
 
@@ -102,7 +126,7 @@ void ProcesarMovimientoJugador(tEstado* estado, char tecla)
         }
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MostrarMapaJerarquico(tNodoArbolNario* nodo, tEstado* estado, int nivel, int xCentro, int yRelativo)
 {
     tInfoCamara* info;
@@ -115,7 +139,8 @@ void MostrarMapaJerarquico(tNodoArbolNario* nodo, tEstado* estado, int nivel, in
     saltoV = 4;
     separacionH = (nivel == 0) ? 42 : (nivel == 1) ? 20 : (nivel == 2) ? 10 : 5;
 
-    if (!nodo) return;
+    if(!nodo)
+        return;
 
     info = (tInfoCamara*)nodo->info;
     ubicarCursor(xCentro, yRelativo);
@@ -129,16 +154,32 @@ void MostrarMapaJerarquico(tNodoArbolNario* nodo, tEstado* estado, int nivel, in
     {
         SetConsoleTextAttribute(hConsole, 15);
         printf("[");
-        if (info->cant_criaturas > 0) { SetConsoleTextAttribute(hConsole, 12); printf("C"); }
-        if (info->hay_premio) { SetConsoleTextAttribute(hConsole, 14); printf("P"); }
-        if (info->hay_vida) { SetConsoleTextAttribute(hConsole, 10); printf("V"); }
-        if (info->hay_lava) { SetConsoleTextAttribute(hConsole, 12); printf("L"); }
+        if (info->cant_criaturas > 0)
+        {
+            SetConsoleTextAttribute(hConsole, 12);
+            printf("C");
+        }
+        if (info->hay_premio)
+        {
+            SetConsoleTextAttribute(hConsole, 14);
+            printf("P");
+        }
+        if (info->hay_vida)
+        {
+            SetConsoleTextAttribute(hConsole, 10);
+            printf("V");
+        }
+        if (info->hay_lava)
+        {
+            SetConsoleTextAttribute(hConsole, 12);
+            printf("L");
+        }
         SetConsoleTextAttribute(hConsole, 15);
         printf("]");
     }
 
     hijos = nodo->hijos;
-    if (hijos)
+    if(hijos)
     {
         cantidadHijos = 0;
         aux = hijos;
@@ -170,8 +211,8 @@ void MostrarMapaJerarquico(tNodoArbolNario* nodo, tEstado* estado, int nivel, in
     }
     SetConsoleTextAttribute(hConsole, 7);
 }
-
-void DibujarInterfaz(tEstado* estado, int nivelLavaActual, int alturaMaxima)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void DibujarInterfaz(tEstado *estado, int nivelLavaActual, int alturaMaxima)
 {
     tInfoCamara* infoActual = (tInfoCamara*)estado->PosJugador->info;
     tNodoArbolNario* padre = NULL;
@@ -299,7 +340,7 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
                     VerificarCombate(estado);
                 }
 
-                if (nivelLavaActual >= 0 && (rand() % 100 < 25)) /// aca definimos que la probabilidad de lava sea del 25%
+                if (nivelLavaActual >= 0 && (rand() % 100 < 25)) /// aca definimos que la probabilidad de ascenso de la lava sea del 25%
                 {
                     for(iteradorSacudida = 0; iteradorSacudida < 5; iteradorSacudida++)
                     {
@@ -350,33 +391,63 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
     VaciarLista(&(estado->Historial));
     VaciarCola(&colaTurno);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MostrarRegistroMovimientos(tEstado* estado)
 {
     tLista nodoActual;
     tMovimientoLog* datosRegistro;
-    int numeroPaso;
+    int numeroPaso = 1, i;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     nodoActual = estado->Historial;
-    numeroPaso = 1;
 
-    printf("======================================================================\n");
-    printf("                      REGISTRO DE LA EXPLORACION                      \n");
-    printf("======================================================================\n");
+    system("cls");
+
+    SetConsoleTextAttribute(hConsole, 11 | FOREGROUND_INTENSITY);
+    printf("\n\t%c", 201);
+    for(i = 0; i < 74; i++) printf("%c", 205);
+    printf("%c\n", 187);
+
+    printf("\t%c %-72s %c\n", 186, "                  BITACORA FINAL DE LA EXPLORACION", 186);
+
+    printf("\t%c", 204);
+
+    for(i = 0; i < 74; i++)
+        printf("%c", 205);
+
+    printf("%c\n", 185);
 
     while(nodoActual)
     {
         datosRegistro = (tMovimientoLog*)nodoActual->Info;
 
-        printf("[%02d] Camara %d ---> Camara %d | %s\n",
-               numeroPaso++,
-               datosRegistro->idOrigen,
-               datosRegistro->idDestino,
-               datosRegistro->descripcion);
+        SetConsoleTextAttribute(hConsole, 11 | FOREGROUND_INTENSITY);
+        printf("\t%c ", 186);
+
+        SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+        printf("[%02d] ", numeroPaso++);
+
+        SetConsoleTextAttribute(hConsole, 15);
+        printf("Camara %-3d %c%c%c Camara %-3d",
+               datosRegistro->idOrigen, 196, 196, 16, datosRegistro->idDestino);
+
+        SetConsoleTextAttribute(hConsole, 8);
+        printf(" | ");
+
+        SetConsoleTextAttribute(hConsole, 10);
+        printf("%-35s    ", datosRegistro->descripcion);
+
+        SetConsoleTextAttribute(hConsole, 11 | FOREGROUND_INTENSITY);
+        printf(" %c\n", 186);
 
         nodoActual = nodoActual->sig;
     }
 
-    printf("======================================================================\n");
-    printf("Presione una tecla para continuar...");
-    getch();
+    printf("\t%c", 200);
+    for(int i = 0; i < 74; i++) printf("%c", 205);
+    printf("%c\n", 188);
+
+    SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+    printf("\n\t>> Presione una tecla para volver");
+    SetConsoleTextAttribute(hConsole, 7);
 }
