@@ -157,6 +157,7 @@ int MenuOnLine()
     tConfig config;
     tRanking reg;
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
 
     while (!salir)
     {
@@ -212,15 +213,13 @@ int MenuOnLine()
                                     if (GenerarEstructuraVolcan(&estado, &config))
                                     {
                                         ConstruirMapaPadres(estado.Volcan, &(estado.MapaPadres));
+                                        PoblarCamaras(&estado, &config);
 
-                                        if (estado.Volcan != NULL && estado.Volcan->hijos != NULL)
+                                        if(TieneSolucion(estado.Volcan))
                                         {
                                             mapaPobreOnline = 0;
-                                            PoblarCamaras(&estado, &config);
-
                                             GrabarArchivoVolcan(estado.Volcan, &estado, ARCH_VOLCAN);
                                             EjecutarCicloJuego(&estado, &config, ARCH_CONFIG);
-
                                             enviar_partida(sock, idJugador, (float)estado.Puntaje, estado.TurnosJugados);
                                         }
 
@@ -237,7 +236,7 @@ int MenuOnLine()
                             {
                                 system("cls");
 
-                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_ROJO);
                                 printf("\n\t%c", 201);
                                 for(i = 0; i < 50; i++) printf("%c", 205);
                                 printf("%c\n", 187);
@@ -248,16 +247,16 @@ int MenuOnLine()
                                 for(i = 0; i < 50; i++) printf("%c", 205);
                                 printf("%c\n", 185);
 
-                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_ROJO);
                                 printf("\t%c  ESTADO: %-39s %c\n", 186, "JUGADOR NO ENCONTRADO", 186);
                                 printf("\t%c  INFO  : Registrese en el menu de exploradores.  %c\n", 186, 186);
 
-                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_ROJO);
                                 printf("\t%c", 200);
                                 for(i = 0; i < 50; i++) printf("%c", 205);
                                 printf("%c\n", 188);
 
-                                SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
                                 printf("\n\t>> Presione una tecla para volver al menu principal...");
                                 SetConsoleTextAttribute(hConsole, 7);
 
@@ -292,7 +291,7 @@ int MenuOnLine()
 
                             if (strcmp(buffer, "REGISTER_OK") == 0)
                             {
-                                SetConsoleTextAttribute(hConsole, 10 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_VERDE);
                                 printf("\n\t%c", 201);
                                 for(i = 0; i < 50; i++) printf("%c", 205);
                                 printf("%c\n", 187);
@@ -300,14 +299,13 @@ int MenuOnLine()
                             }
                             else
                             {
-                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_ROJO);
                                 printf("\n\t%c", 201);
                                 for(i = 0; i < 50; i++) printf("%c", 205);
                                 printf("%c\n", 187);
                                 printf("\t%c %-48s %c\n", 186, "          ERROR DE REGISTRO", 186);
                             }
 
-                            // --- SEPARADOR ---
                             printf("\t%c", 204);
                             for(i = 0; i < 50; i++) printf("%c", 205);
                             printf("%c\n", 185);
@@ -330,9 +328,9 @@ int MenuOnLine()
                             }
 
                             if (strcmp(buffer, "REGISTER_OK") == 0)
-                                SetConsoleTextAttribute(hConsole, 10 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_VERDE);
                             else
-                                SetConsoleTextAttribute(hConsole, 12 | FOREGROUND_INTENSITY);
+                                SetConsoleTextAttribute(hConsole, CLR_ROJO);
 
                             printf("\t%c", 200);
                             for(i = 0; i < 50; i++) printf("%c", 205);
@@ -341,7 +339,7 @@ int MenuOnLine()
                         closesocket(sock);
                     }
 
-                    SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
                     printf("\n\t>> Presione una tecla para volver al menu...");
                     SetConsoleTextAttribute(hConsole, 7);
                     getch();
@@ -354,10 +352,9 @@ int MenuOnLine()
                 sock = conectar_servidor(IP_SERVIDOR, 8080);
                 if (sock != INVALID_SOCKET)
                 {
-                    HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
                     send(sock, "RANKING", 7, 0);
 
-                    SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(hConsola, CLR_CYAN);
                     printf("\n\t%c", 201);
                     for(i = 0; i < 62; i++)
                         printf("%c", 205);
@@ -371,27 +368,31 @@ int MenuOnLine()
                         for(i = 0; i < 62; i++) printf("%c", 205);
                         printf("%c\n", 185);
 
-                        printf("\t%c  %-4s | %-22s | %-10s | %-14s %c\n", 186, "ID", "NOMBRE", "PUNTOS", "PARTIDAS", 186);
+                        printf("\t%c  %-4s | %-22s | %-10s | %-14s %c\n", 186, "POS", "NOMBRE", "PUNTOS", "PARTIDAS", 186);
 
                         puesto = 1;
                         do
                         {
+
+                            if (puesto > MAX_RANKING)
+                                    break;
+
                             printf("\t%c", 204);
                             for(i = 0; i < 62; i++) printf("%c", 205);
                             printf("%c\n", 185);
 
-                            SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
+                            SetConsoleTextAttribute(hConsola, CLR_CYAN);
                             printf("\t%c  ", 186);
 
                             if (puesto == 1) SetConsoleTextAttribute(hConsola, 14 | FOREGROUND_INTENSITY);
                             else if (puesto == 2) SetConsoleTextAttribute(hConsola, 7 | FOREGROUND_INTENSITY);
                             else if (puesto == 3) SetConsoleTextAttribute(hConsola, 6);
-                            else SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
+                            else SetConsoleTextAttribute(hConsola, CLR_CYAN);
 
                             printf("%-4d | %-22s | %-10.2f | %-14d ",
-                                   reg.idJugador, reg.Nombre, reg.TotalPuntos, reg.partidas);
+                                   puesto, reg.Nombre, reg.TotalPuntos, reg.partidas);
 
-                            SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
+                            SetConsoleTextAttribute(hConsola, CLR_CYAN);
                             printf("%c\n", 186);
                             puesto++;
                         }
@@ -404,11 +405,11 @@ int MenuOnLine()
                             printf("%c", 205);
                         printf("%c\n", 185);
 
-                        SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
+                        SetConsoleTextAttribute(hConsola, CLR_CYAN);
                         printf("\t%c %-60s %c\n", 186, "       EL RANKING ESTA VACIO - SE EL PRIMERO!", 186);
                     }
 
-                    SetConsoleTextAttribute(hConsola, 11 | FOREGROUND_INTENSITY);
+                    SetConsoleTextAttribute(hConsola, CLR_CYAN);
                     printf("\t%c", 200);
                     for(i = 0; i < 62; i++) printf("%c", 205);
                     printf("%c\n", 188);

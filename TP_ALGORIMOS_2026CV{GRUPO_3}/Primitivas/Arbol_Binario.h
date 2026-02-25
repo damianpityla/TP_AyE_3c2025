@@ -10,7 +10,6 @@
 #define DUPLICADO -3
 #define ARBOL_VACIO -4
 
-
 typedef struct sNodoArbolBin
 {
     void *Info;

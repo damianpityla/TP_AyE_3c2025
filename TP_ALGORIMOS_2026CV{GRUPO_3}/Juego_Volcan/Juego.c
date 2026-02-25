@@ -28,9 +28,9 @@ int obtenerFilaActual()
     return 0;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AvanzarLava(tNodoArbolNario* nodo, int nivelObjetivo, int nivelActual)
+void AvanzarLava(tNodoArbolNario *nodo, int nivelObjetivo, int nivelActual)
 {
-    tInfoCamara* info;
+    tInfoCamara *info;
     tLista hijos;
 
     if(!nodo)
@@ -58,8 +58,8 @@ void AvanzarLava(tNodoArbolNario* nodo, int nivelObjetivo, int nivelActual)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ProcesarMovimientoJugador(tEstado* estado, char tecla)
 {
-    tNodoArbolNario* destino = NULL;
-    tInfoCamara* info;
+    tNodoArbolNario *destino = NULL;
+    tInfoCamara *info;
     tLista hijos;
     int indiceHijo;
     int i, cantHijos = 0;
@@ -108,13 +108,10 @@ void ProcesarMovimientoJugador(tEstado* estado, char tecla)
     {
         estado->PosJugador = destino;
         info = (tInfoCamara*)destino->info;
-        if (info->hay_lava)
-        {
-            estado->Vidas = 0;
-        }
+
         if (info->hay_premio)
         {
-            estado->Puntaje += 1;
+            estado->Puntaje += 10;
             info->hay_premio = 0;
             Beep(800, 100);
         }
@@ -191,8 +188,10 @@ void MostrarMapaJerarquico(tNodoArbolNario* nodo, tEstado* estado, int nivel, in
         printf("|");
         if (cantidadHijos > 1) {
             ubicarCursor(nuevaX, yRelativo + 2);
-            for(k = 0; k <= anchoAbanico; k++) printf("-");
-            for(k = 0; k < cantidadHijos; k++) {
+            for(k = 0; k <= anchoAbanico; k++)
+                printf("-");
+            for(k = 0; k < cantidadHijos; k++)
+            {
                 ubicarCursor(nuevaX + (k * separacionH), yRelativo + 2);
                 printf("+");
                 ubicarCursor(nuevaX + (k * separacionH), yRelativo + 3);
@@ -269,10 +268,16 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
     int idCamaraOrigen;
     int iteradorSacudida;
     int Abandono = 0;
-    tInfoCamara* infoJugador;
+    int bonusVidas;
+    int i;
+    tInfoCamara *infoJugador;
     tCola colaTurno;
+    tCola colaEventosPC;
     tMovimientoLog registroMovimiento;
+    tEventoComputadora evento;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    CrearCola(&colaEventosPC);
     CrearCola(&colaTurno);
     CrearLista(&(estado->Historial));
 
@@ -287,7 +292,7 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
         ubicarCursor(0,0);
         printf("===========================================================================\n");
         printf(" JUGADOR: %-10s | VIDAS: %d | TURNOS: %d | NIVEL LAVA: %d \n",
-                "Jugador", estado->Vidas, estado->TurnosJugados, nivelLavaActual);
+               "Jugador", estado->Vidas, estado->TurnosJugados, nivelLavaActual);
         printf("===========================================================================\n");
 
         filaBaseMapa = 4;
@@ -326,21 +331,36 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
                     Beep(200, 400);
                     break;
                 }
+                /// encolado de IA de Criaturas
+                evento.tipo = MOV_CRIATURA;
+                PonerEnCola(&colaEventosPC, &evento, sizeof(tEventoComputadora));
+
+                /// encolado de Avance de Lava
+                if (nivelLavaActual >= 0 && (rand() % 100 < 25))
+                {
+                    evento.tipo = MOV_LAVA;
+                    evento.nivelLava = nivelLavaActual;
+                    PonerEnCola(&colaEventosPC, &evento, sizeof(tEventoComputadora));
+                }
+
                 registroMovimiento.idOrigen = idCamaraOrigen;
                 registroMovimiento.idDestino = ((tInfoCamara*)estado->PosJugador->info)->id;
                 sprintf(registroMovimiento.descripcion, "Turno %d: Desplazamiento efectuado.", estado->TurnosJugados + 1);
 
                 PonerAlFinalEnLista(&(estado->Historial), &registroMovimiento, sizeof(tMovimientoLog));
+            }
 
-                VerificarCombate(estado);
+            /// desencolado de Eventos de la Computadora
+            while(!ColaVacia(&colaEventosPC) && juegoActivo)
+            {
+                SacarDeCola(&colaEventosPC, &evento, sizeof(tEventoComputadora));
 
-                if (estado->Vidas > 0)
+                if (evento.tipo == MOV_CRIATURA)
                 {
                     MoverCriaturas(estado->Volcan, estado);
                     VerificarCombate(estado);
                 }
-
-                if (nivelLavaActual >= 0 && (rand() % 100 < 25)) /// aca definimos que la probabilidad de ascenso de la lava sea del 25%
+                else if (evento.tipo == MOV_LAVA)
                 {
                     for(iteradorSacudida = 0; iteradorSacudida < 5; iteradorSacudida++)
                     {
@@ -349,17 +369,14 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
                         system("color 07");
                         Sleep(40);
                     }
-                    AvanzarLava(estado->Volcan, nivelLavaActual, 0);
+                    AvanzarLava(estado->Volcan, evento.nivelLava, 0);
                     nivelLavaActual--;
-                    infoJugador = (tInfoCamara*)estado->PosJugador->info;
-                    if (infoJugador->hay_lava)
-                    {
-                        estado->Vidas = 0;
-                        juegoActivo = 0;
-                        Beep(400, 600);
-                        printf("\n[!] LA LAVA TE ALCANZO. PARTIDA TERMINADA.\n");
-                        Sleep(1500);
-                    }
+                }
+                infoJugador = (tInfoCamara*)estado->PosJugador->info;
+                if (infoJugador->hay_lava || estado->Vidas <= 0)
+                {
+                    if(infoJugador->hay_lava) estado->Vidas = 0;
+                    juegoActivo = 0;
                 }
             }
             if(juegoActivo)
@@ -371,25 +388,96 @@ void EjecutarCicloJuego(tEstado *estado, tConfig *config, const char *archConfig
                 {
                     PlaySound(NULL, 0, 0);
                     system("cls");
-                    printf("\n¡HAS ESCAPADO! Puntos por vidas: %d\n", estado->Vidas * 5);
-                    estado->Puntaje += (estado->Vidas * 5);
+                    bonusVidas = estado->Vidas;
+
+                    Beep(523, 150);
+                    Beep(659, 150);
+                    Beep(783, 150);
+                    Beep(1046, 300);
+
+                    SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
+                    printf("\n\t%c", 201);
+                    for(i = 0; i < 50; i++) printf("%c", 205);
+                    printf("%c\n", 187);
+
+                    printf("\t%c                VICOTRIA ALCANZADA                %c\n", 186, 186);
+                    printf("\t%c         ¡HAS LOGRADO ESCAPAR DEL VOLCAN!         %c\n", 186, 186);
+
+                    printf("\t%c", 204);
+                    for(i = 0; i < 50; i++) printf("%c", 205);
+                    printf("%c\n", 185);
+
+                    SetConsoleTextAttribute(hConsole, 15);
+                    printf("\t%c  Resumen de la mision:                           %c\n", 186, 186);
+                    printf("\t%c    - Puntos acumulados: %10d               %c\n", 186, estado->Puntaje, 186);
+                    printf("\t%c    - Vidas restantes:   %10d               %c\n", 186, estado->Vidas, 186);
+
+                    SetConsoleTextAttribute(hConsole, 10);
+                    printf("\t%c    - Bono por supervivencia : %4d               %c\n", 186, bonusVidas, 186);
+
+                    SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
+                    printf("\t%c", 200);
+                    for(i = 0; i < 50; i++) printf("%c", 205);
+                    printf("%c\n", 188);
+
+                    estado->Puntaje += bonusVidas;
+
+                    printf("\n\t  TOTAL FINAL: %d PUNTOS", estado->Puntaje);
+                    printf("\n\n\t>> Presione una tecla para continuar...");
                     getch();
                     juegoActivo = 0;
                 }
             }
         }
     }
+
     PlaySound(NULL, 0, 0);
-    if(!Abandono)
+    system("cls");
+
+    if(Abandono)
     {
-        system("cls");
-        printf("\nGAME OVER - El volcan te ha consumido.\n");
+        SetConsoleTextAttribute(hConsole, CLR_CYAN);
+        printf("\n\t%c", 201);
+        for(i = 0; i < 50; i++) printf("%c", 205);
+        printf("%c\n", 187);
+        printf("\t%c                MISION ABORTADA                   %c\n", 186, 186);
+        printf("\t%c         Has decidido retirarte del volcan        %c\n", 186, 186);
+        printf("\t%c", 200);
+        for(i = 0; i < 50; i++) printf("%c", 205);
+        printf("%c\n", 188);
+
+        SetConsoleTextAttribute(hConsole, 7);
+        printf("\n\tPuntaje final acumulado: %d puntos.\n", estado->Puntaje);
+        printf("\n\t>> Presione una tecla para ver la bitacora...");
+        getch();
+        MostrarRegistroMovimientos(estado);
+        getch();
+    }
+    else if (estado->Vidas <= 0)
+    {
+        Beep(330, 300);
+        Beep(131, 500);
+        SetConsoleTextAttribute(hConsole, CLR_ROJO);
+        printf("\n\t%c", 201);
+        for(i = 0; i < 50; i++) printf("%c", 205);
+        printf("%c\n", 187);
+        printf("\t%c                   GAME OVER                      %c\n", 186, 186);
+        printf("\t%c        El volcan ha reclamado tu alma...         %c\n", 186, 186);
+        printf("\t%c", 200);
+        for(i = 0; i < 50; i++) printf("%c", 205);
+        printf("%c\n", 188);
+
+        SetConsoleTextAttribute(hConsole, 7);
+        printf("\n\tPuntaje final acumulado: %d puntos.\n", estado->Puntaje);
+        printf("\n\t>> Presione una tecla para ver la bitacora...");
+        getch();
         MostrarRegistroMovimientos(estado);
         getch();
     }
 
     VaciarLista(&(estado->Historial));
     VaciarCola(&colaTurno);
+    VaciarCola(&colaEventosPC);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MostrarRegistroMovimientos(tEstado* estado)
@@ -403,7 +491,7 @@ void MostrarRegistroMovimientos(tEstado* estado)
 
     system("cls");
 
-    SetConsoleTextAttribute(hConsole, 11 | FOREGROUND_INTENSITY);
+    SetConsoleTextAttribute(hConsole, CLR_CYAN);
     printf("\n\t%c", 201);
     for(i = 0; i < 74; i++) printf("%c", 205);
     printf("%c\n", 187);
@@ -417,37 +505,76 @@ void MostrarRegistroMovimientos(tEstado* estado)
 
     printf("%c\n", 185);
 
-    while(nodoActual)
+    if (nodoActual == NULL)
     {
-        datosRegistro = (tMovimientoLog*)nodoActual->Info;
-
-        SetConsoleTextAttribute(hConsole, 11 | FOREGROUND_INTENSITY);
-        printf("\t%c ", 186);
-
-        SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
-        printf("[%02d] ", numeroPaso++);
-
-        SetConsoleTextAttribute(hConsole, 15);
-        printf("Camara %-3d %c%c%c Camara %-3d",
-               datosRegistro->idOrigen, 196, 196, 16, datosRegistro->idDestino);
-
-        SetConsoleTextAttribute(hConsole, 8);
-        printf(" | ");
-
-        SetConsoleTextAttribute(hConsole, 10);
-        printf("%-35s    ", datosRegistro->descripcion);
-
-        SetConsoleTextAttribute(hConsole, 11 | FOREGROUND_INTENSITY);
-        printf(" %c\n", 186);
-
-        nodoActual = nodoActual->sig;
+        SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
+        printf("\t%c %-72s %c\n", 186, "                [!] LA BITACORA ESTA VACIA", 186);
     }
+    else
+    {
 
+        while(nodoActual)
+        {
+            datosRegistro = (tMovimientoLog*)nodoActual->Info;
+
+            SetConsoleTextAttribute(hConsole, CLR_CYAN);
+            printf("\t%c ", 186);
+
+            SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
+            printf("[%02d] ", numeroPaso++);
+
+            SetConsoleTextAttribute(hConsole, 15);
+            printf("Camara %-3d %c%c%c Camara %-3d",
+                   datosRegistro->idOrigen, 196, 196, 16, datosRegistro->idDestino);
+
+            SetConsoleTextAttribute(hConsole, 8);
+            printf(" | ");
+
+            SetConsoleTextAttribute(hConsole, 10);
+            printf("%-35s    ", datosRegistro->descripcion);
+
+            SetConsoleTextAttribute(hConsole, CLR_CYAN);
+            printf(" %c\n", 186);
+
+            nodoActual = nodoActual->sig;
+        }
+    }
+    SetConsoleTextAttribute(hConsole, CLR_CYAN);
     printf("\t%c", 200);
-    for(int i = 0; i < 74; i++) printf("%c", 205);
+    for(i = 0; i < 74; i++) printf("%c", 205);
     printf("%c\n", 188);
 
-    SetConsoleTextAttribute(hConsole, 14 | FOREGROUND_INTENSITY);
+    SetConsoleTextAttribute(hConsole, CLR_AMARILLO);
     printf("\n\t>> Presione una tecla para volver");
     SetConsoleTextAttribute(hConsole, 7);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int TieneSolucion(tNodoArbolNario* nodo)
+{
+    tInfoCamara *info;
+    tLista hijos;
+    tNodoArbolNario *h;
+
+    if(!nodo)
+        return SIN_SOLUCION;
+    info = (tInfoCamara*)nodo->info;
+
+    /// Si la cámara tiene lava, este camino esta bloqueado
+    if(info->hay_lava)
+        return SIN_SOLUCION;
+
+    /// si llegamos a la salida (S) y no hay lava, hay solucion
+    if (info->es_salida)
+        return HAY_SOLUCION;
+
+    hijos = nodo->hijos;
+    while (hijos)
+    {
+        h = *(tNodoArbolNario**)hijos->Info;
+        if (TieneSolucion(h) == HAY_SOLUCION)
+            return HAY_SOLUCION;
+        hijos = hijos->sig;
+    }
+
+    return SIN_SOLUCION;
 }

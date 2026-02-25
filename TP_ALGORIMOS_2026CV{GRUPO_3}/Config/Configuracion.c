@@ -41,14 +41,19 @@ int CargarConfiguracion(const char *ArchConfiguracion, tConfig *config)
         {
             if (strstr(clave, "ALTURA_MAXIMA"))
                 config->altura_maxima = valor;
+
             else if (strstr(clave, "MAX_CONEXIONES"))
                 config->max_conexiones = valor;
+
             else if (strstr(clave, "VIDAS_JUGADOR"))
                 config->vidas_iniciales = valor;
+
             else if (strstr(clave, "VIDAS_EXTRA"))
                 config->vidas_extra = valor;
+
             else if (strstr(clave, "CRIATURAS"))
                 config->criaturas = valor;
+
             else if (strstr(clave, "PREMIOS"))
                 config->premios = valor;
         }

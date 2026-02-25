@@ -16,8 +16,6 @@
 #define ES_HOJA -7
 #define NO_HOJA -8
 
-#define MINIMO(X,Y)((X)<=(Y)?(X):(Y))
-
 typedef struct sNodoArbolNario
 {
     void *info;

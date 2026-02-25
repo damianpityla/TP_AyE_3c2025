@@ -5,16 +5,9 @@
 #include "../Config/Configuracion.h"
 
 #define ARCH_VOLCAN "volcan.txt"
-
+#define VOLCAN_ERROR 0
 #define TAM_DESCRIPCION 50
 
-#define JUGADOR  'J'
-#define SALIDA   'S'
-#define PREMIO   'P'
-#define CRIATURA 'C'
-#define VIDA     'V'
-#define VACIO    '0'
-#define LAVA     'L'
 
 typedef struct sConfig tConfig;
 

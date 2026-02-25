@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1771989984 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.c
+1772026950 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.c
 	"Configuracion.h"
 
 1771990075 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\config\configuracion.h
@@ -34,11 +34,11 @@
 	"Usuario.h"
 	<time.h>
 
-1771994406 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
+1772035469 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.c
 	"../Servidor/Servidor.h"
 	"Usuario.h"
 
-1771989748 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
+1772034567 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\usuario.h
 	"Juego.h"
 	"../Primitivas/Arbol_Binario.h"
 
@@ -66,10 +66,10 @@
 	"../Primitivas/Cola.h"
 	"../Primitivas/Arbol_Binario.h"
 
-1771988320 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.c
+1772036179 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.c
 	"Volcan.h"
 
-1771989732 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.h
+1772036342 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\volcan.h
 	"../Primitivas/Arbol_N_ario.h"
 	"../Config/Configuracion.h"
 
@@ -172,7 +172,7 @@
 1771987778 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_binario.c
 	"Arbol_Binario.h"
 
-1771987778 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_binario.h
+1772032933 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_binario.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -180,13 +180,13 @@
 1771979656 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.c
 	"Arbol_N_ario.h"
 
-1771987827 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.h
+1772036482 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\primitivas\arbol_n_ario.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"Lista.h"
 
-1771989700 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\servidor.h
+1772036019 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\servidor.h
 	<stdio.h>
 	<stdlib.h>
 	<winsock2.h>
@@ -195,7 +195,7 @@
 	"../Primitivas/Lista.h"
 	"../Juego_Volcan/Usuario.h"
 
-1771991961 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\criatura.c
+1772034097 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\criatura.c
 	"Criatura.h"
 
 1771994514 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\criatura.h
@@ -203,10 +203,10 @@
 	"Volcan.h"
 	"../Primitivas/Cola.h"
 
-1771994450 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\juego.c
+1772035801 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\juego.c
 	"Juego.h"
 
-1771989748 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\juego.h
+1772036019 c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\juego_volcan\juego.h
 	<windows.h>
 	<conio.h>
 	<ctype.h>
@@ -214,7 +214,7 @@
 	"../Config/Configuracion.h"
 	"Criatura.h"
 
-1771992665 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\servidor.c
+1772035057 source:c:\users\kevin uwu\documents\github\tp_aye_3c2025\tp_algorimos_2026cv{grupo_3}\servidor\servidor.c
 	"Servidor.h"
 
 1771601206 h"

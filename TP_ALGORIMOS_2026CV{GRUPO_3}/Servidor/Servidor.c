@@ -59,7 +59,7 @@ void procesar_peticiones_pendientes(tCola *pCola, SOCKET client_sock, tArbolBin 
         {
             sscanf(peticion + strlen(CMD_LOGIN), "%s", nombre);
             strcpy(clave.nombre, nombre);
-            nodo = BusquedaEnArbolBin(pIndice, &clave, cmpIndicePorNombre);
+            nodo = BuscarPorNombreEnArbol(pIndice, nombre);
             if (nodo && *nodo)
             {
                 sprintf(respuesta, "OK %d", ((tIndiceJugador*)(*nodo)->Info)->id);
@@ -74,7 +74,7 @@ void procesar_peticiones_pendientes(tCola *pCola, SOCKET client_sock, tArbolBin 
         {
             sscanf(peticion + strlen(CMD_REGISTER), "%s", nombre);
             strcpy(clave.nombre, nombre);
-            nodo = BusquedaEnArbolBin(pIndice, &clave, cmpIndicePorNombre);
+            nodo = BuscarPorNombreEnArbol(pIndice, nombre);
             if (nodo && *nodo)
             {
                 sprintf(respuesta, MSJ_ERR_ALREADY_EXISTS);
@@ -104,6 +104,7 @@ void procesar_peticiones_pendientes(tCola *pCola, SOCKET client_sock, tArbolBin 
         }
         else if (strncmp(peticion, CMD_RANKING, (int)strlen(CMD_RANKING)) == 0)
         {
+            CrearLista(&ranking);
             if (GenerarRanking(ARCH_PARTIDAS, pIndice, &ranking) == TODO_OK)
             {
                 actual = ranking;
@@ -189,7 +190,6 @@ int GenerarRanking(const char *archPartidas, tArbolBin *pIndice, tLista *pRankin
     }
 
     CrearLista(&listaTemporal);
-    CrearLista(pRanking);
 
     while(fread(&part, sizeof(tPartida), 1, pf) == 1)
     {
@@ -202,40 +202,35 @@ int GenerarRanking(const char *archPartidas, tArbolBin *pIndice, tLista *pRankin
             reg.partidas = 1;
 
             res = InsertarEnOrdenLista(&listaTemporal,
-                                    &reg,
-                                    sizeof(tRanking),
-                                    SIN_DUPLICADOS,
-                                    cmpRankingPorId,
-                                    AcumularRanking);
-            if(res != TODO_OK)
+                                       &reg,
+                                       sizeof(tRanking),
+                                       SIN_DUPLICADOS,
+                                       cmpRankingPorId,
+                                       AcumularRanking);
+            if(res != TODO_OK && res != DUPLICADO)
             {
                 break;
             }
+            res = TODO_OK;
 
         }
     }
     fclose(pf);
     if(res == TODO_OK)
     {
+
         while(listaTemporal)
         {
-            memcpy(&reg, listaTemporal->Info, sizeof(tRanking));
-            res = InsertarEnOrdenLista(pRanking,
-                                       &reg,
-                                       sizeof(tRanking),
-                                       CON_DUPLICADOS,
-                                       cmpRankingPorPuntosDesc,
-                                       NULL);
-            if(res != TODO_OK)
-            {
-                break;
-            }
-
             sacarPrimeroLista(&listaTemporal, &reg, sizeof(tRanking));
+
+            InsertarEnOrdenLista(pRanking,
+                                 &reg,
+                                 sizeof(tRanking),
+                                 CON_DUPLICADOS,
+                                 cmpRankingPorPuntosDesc,
+                                 NULL);
         }
     }
-
-    VaciarLista(&listaTemporal);
     return res;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,7 +240,7 @@ int altaJugadorServidor(const char *archIndice, tArbolBin *pIndice, const char *
     tJugador nuevo;
     tIndiceJugador ind;
 
-    pf = fopen(ARCH_JUGADORES, "ab+");
+    pf = fopen(ARCH_JUGADORES, "ab");
     if(!pf)
     {
         return ERROR_ARCHIVO;
@@ -253,11 +248,15 @@ int altaJugadorServidor(const char *archIndice, tArbolBin *pIndice, const char *
 
     fseek(pf, 0, SEEK_END);
     nuevo.id = (int)(ftell(pf) / sizeof(tJugador)) + 1;
-    strncpy(nuevo.nombre, nombre, TAM_NOMBRE);
-    nuevo.nombre[TAM_NOMBRE] = '\0';
+
+    memset(nuevo.nombre, 0, sizeof(nuevo.nombre));
+    strncpy(nuevo.nombre, nombre, TAM_NOMBRE - 1);
 
     if(fwrite(&nuevo, sizeof(tJugador), 1, pf) != 1)
+    {
+        fclose(pf);
         return ERROR_ARCHIVO;
+    }
 
     fclose(pf);
 
@@ -266,7 +265,8 @@ int altaJugadorServidor(const char *archIndice, tArbolBin *pIndice, const char *
     strcpy(ind.nombre, nuevo.nombre);
 
     if(InsertarEnArbolBin(pIndice, &ind, sizeof(tIndiceJugador), cmp) != TODO_OK)
-            return SIN_MEM;
+            return ERROR_REGISTRO;
+
     GuardarIndiceBinario(*pIndice, archIndice);
 
     return TODO_OK;
@@ -377,7 +377,25 @@ int CargarIndiceJugadores(const char *ArchJugadores, tArbolBin *pIndice)
     fclose(pJugadores);
     return TODO_OK;
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+tNodoArbolBin** BuscarPorNombreEnArbol(tArbolBin* p, const char* nombre)
+{
+    tNodoArbolBin** izq;
+    tIndiceJugador* info;
 
+    if(!p || !*p)
+        return NULL;
+
+    info = (tIndiceJugador*)(*p)->Info;
+    if(strcmp(info->nombre, nombre) == 0)
+        return p;
+
+    izq = BuscarPorNombreEnArbol(&(*p)->Izq, nombre);
+    if(izq)
+        return izq;
+
+    return BuscarPorNombreEnArbol(&(*p)->Der, nombre);
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AcumularRanking(void *nodoInfo, const void *elem)
 {
@@ -436,5 +454,3 @@ int cmpRankingPorId(const void *a, const void *b)
 
     return ra->idJugador - rb->idJugador;
 }
-
-

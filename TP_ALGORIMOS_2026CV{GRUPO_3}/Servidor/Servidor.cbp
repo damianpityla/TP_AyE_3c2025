@@ -62,7 +62,6 @@
 		<Unit filename="../Primitivas/Arbol_N_ario.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../Primitivas/Arbol_N_ario.h" />
 		<Unit filename="../Primitivas/Cola.c">
 			<Option compilerVar="CC" />
 		</Unit>

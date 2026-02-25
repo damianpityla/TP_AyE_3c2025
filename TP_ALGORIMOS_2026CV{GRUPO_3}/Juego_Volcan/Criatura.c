@@ -97,14 +97,15 @@ void VerificarCombate(tEstado* estado)
             printf("\n\t>> Presione cualquier tecla para continuar la exploracion...");
             SetConsoleTextAttribute(hConsole, 7);
         }
+    }
         else
         {
             printf("\n [!] Sin vidas restantes. El volcan reclama tu alma...\n");
         }
-    }
+
 }
 //////////////////////////////////////////////////////////////////////////////
-void MoverCriaturas(tNodoArbolNario* raiz, tEstado *estado)
+void MoverCriaturas(tNodoArbolNario *raiz, tEstado *estado)
 {
     tCola ColaExploracion;
     tCola ColaCambios;

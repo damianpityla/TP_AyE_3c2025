@@ -32,6 +32,9 @@
 #define TAM_RESPUESTA         TAM_BUFFER
 #define TAM_NOMBRE            50
 
+/* ---          MACROS DE REGISTROS        --- */
+#define ERROR_REGISTRO -5
+
 /* ---      MACROS DE ESTADO DE ENVIO      --- */
 #define ENVIO_OK              1
 #define ENVIO_ERROR           0
@@ -41,7 +44,6 @@
 #define CMD_REGISTER          "REGISTER"
 #define CMD_PARTIDA           "PARTIDA"
 #define CMD_RANKING           "RANKING"
-#define MSJ_OK_PARTIDA        "PARTIDA_GUARDADA"
 
 /* ---         MACROS DE RESPUESTAS         --- */
 #define MSJ_OK_PARTIDA        "PARTIDA_GUARDADA"
@@ -49,6 +51,15 @@
 #define MSJ_ERR_USER_NOT_FOUND "ERROR_USER_NOT_FOUND"
 #define MSJ_ERR_ALREADY_EXISTS "ERROR_ALREADY_EXISTS"
 #define MSJ_ERR_DB            "ERROR_DB"
+
+/* ---         MACROS DE COLORES         --- */
+#define CLR_ROJO   (12 | FOREGROUND_INTENSITY)
+#define CLR_AMARILLO (14 | FOREGROUND_INTENSITY)
+#define CLR_VERDE  (10 | FOREGROUND_INTENSITY)
+#define CLR_CYAN (11 | FOREGROUND_INTENSITY)
+#define CLR_RESET  7
+
+
 
 int             iniciar_entorno_socket          ();
 SOCKET          conectar_servidor               (const char *ip, int puerto);
@@ -59,6 +70,7 @@ int             altaJugadorServidor             (const char *arch, tArbolBin *pI
 int             registrarPartidaEnServidor      (const char *arch, int id, float pts, int movs);
 int             cmpRankingPorPuntos             (const void *a, const void *b);
 tNodoArbolBin** BuscarPorIdEnArbol              (tArbolBin *p, int id);
+tNodoArbolBin** BuscarPorNombreEnArbol          (tArbolBin* p, const char* nombre);
 void            CargarIndiceBinario             (tArbolBin *pIndice, const char *nombreArchivo);
 void            GuardarIndiceBinario            (tArbolBin raiz, const char *nombreArchivo);
 int             GenerarRanking                  (const char *archPartidas, tArbolBin *pIndice, tLista *pRanking);
@@ -68,4 +80,5 @@ int             cmpRankingPorId                 (const void *a, const void *b);
 int             cmpIndicePorId                  (const void* a, const void* b);
 int             cmpRankingPorPuntosDesc         (const void *a, const void *b);
 int             cmpIndicePorNombre              (const void *a, const void *b);
+
 #endif // SERVIDOR_H_INCLUDED

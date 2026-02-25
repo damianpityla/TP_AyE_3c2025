@@ -14,13 +14,13 @@ int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
 
     estado->Volcan = (tNodoArbolNario*)malloc(sizeof(tNodoArbolNario));
     if(!estado->Volcan)
-        return 0;
+        return VOLCAN_ERROR;
 
     estado->Volcan->info = malloc(sizeof(tInfoCamara));
     if(!estado->Volcan->info)
     {
         free(estado->Volcan);
-        return 0;
+        return VOLCAN_ERROR;
     }
 
     memcpy(estado->Volcan->info, &infoRaiz, sizeof(tInfoCamara));
@@ -28,7 +28,7 @@ int GenerarEstructuraVolcan(tEstado* estado, tConfig* config)
 
     CrearRamasAleatorias(estado->Volcan, 0, config, &camarasCreadas);
 
-    return 1;
+    return TODO_OK;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CrearRamasAleatorias(tNodoArbolNario* padre, int nivelActual, tConfig* config, int* proximoId)

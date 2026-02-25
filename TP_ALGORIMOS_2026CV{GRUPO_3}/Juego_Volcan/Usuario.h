@@ -9,6 +9,7 @@
 
 #define TODO_OK 1
 #define ERROR_ARCHIVO -1
+#define MAX_RANKING 10
 
 typedef struct
 {
@@ -48,7 +49,6 @@ typedef enum
     OPC_DESCONECTAR
 }eMenuOnline;
 
-///////MENU
 int         Menu                        ();
 int         MenuOffLine                 ();
 int         MenuOnLine                  ();
